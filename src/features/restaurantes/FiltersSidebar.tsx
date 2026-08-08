@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SlidersHorizontal, Star, X } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, Star, X } from "lucide-react";
 import { useAmenities, useCategories } from "@/hooks/usePlaces";
 
 export interface AdvancedFilters {
@@ -18,6 +18,34 @@ export const EMPTY_FILTERS: AdvancedFilters = {
 };
 
 const RATING_TIERS = [3, 3.5, 4, 4.5];
+
+function CollapsibleSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <section>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between text-sm font-semibold text-neutral-900 dark:text-neutral-50"
+      >
+        {title}
+        <ChevronDown
+          size={16}
+          className={`text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && <div className="mt-2">{children}</div>}
+    </section>
+  );
+}
 
 export function FiltersSidebar({
   category,
@@ -72,10 +100,7 @@ export function FiltersSidebar({
         </button>
       </div>
 
-      <section>
-        <h3 className="mb-2 text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-          Calificación
-        </h3>
+      <CollapsibleSection title="Calificación">
         <div className="flex flex-col gap-1.5">
           {RATING_TIERS.map((value) => (
             <label key={value} className="flex items-center gap-2 text-sm">
@@ -94,12 +119,9 @@ export function FiltersSidebar({
             </label>
           ))}
         </div>
-      </section>
+      </CollapsibleSection>
 
-      <section>
-        <h3 className="mb-2 text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-          Precio
-        </h3>
+      <CollapsibleSection title="Precio">
         <div className="flex gap-2">
           <div className="flex-1">
             <p className="mb-1 text-xs font-medium text-neutral-500">Mín. (S/)</p>
@@ -132,12 +154,9 @@ export function FiltersSidebar({
             />
           </div>
         </div>
-      </section>
+      </CollapsibleSection>
 
-      <section>
-        <h3 className="mb-2 text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-          Categoría
-        </h3>
+      <CollapsibleSection title="Categoría">
         <div className="flex flex-col gap-1.5">
           {categories?.map((cat) => (
             <label key={cat.id} className="flex items-center gap-2 text-sm">
@@ -150,13 +169,10 @@ export function FiltersSidebar({
             </label>
           ))}
         </div>
-      </section>
+      </CollapsibleSection>
 
       {amenities && amenities.length > 0 && (
-        <section>
-          <h3 className="mb-2 text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-            Servicios
-          </h3>
+        <CollapsibleSection title="Servicios">
           <div className="flex flex-col gap-1.5">
             {amenities.map((amenity) => (
               <label key={amenity.id} className="flex items-center gap-2 text-sm">
@@ -169,7 +185,7 @@ export function FiltersSidebar({
               </label>
             ))}
           </div>
-        </section>
+        </CollapsibleSection>
       )}
 
       <section className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
