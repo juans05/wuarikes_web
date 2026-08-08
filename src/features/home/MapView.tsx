@@ -59,8 +59,8 @@ export function MapView({
         >
           <Popup minWidth={250} maxWidth={280}>
             <div className="w-full">
-              {place.coverImageUrl && (
-                <div className="relative mb-2 h-32 w-full overflow-hidden rounded-lg bg-neutral-200">
+              <div className="relative mb-2 aspect-[4/3] w-full overflow-hidden rounded-lg bg-neutral-200 dark:bg-neutral-800">
+                {place.coverImageUrl && (
                   <Image
                     src={place.coverImageUrl}
                     alt={place.name}
@@ -68,8 +68,8 @@ export function MapView({
                     sizes="280px"
                     className="object-cover"
                   />
-                </div>
-              )}
+                )}
+              </div>
 
               {(place.category || place.tags.length > 0) && (
                 <div className="mb-1.5 flex flex-wrap gap-1">
