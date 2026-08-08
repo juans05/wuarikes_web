@@ -67,7 +67,7 @@ export function HomeView() {
           <CategoryRow
             key={category.id}
             category={category}
-            places={placesByCategory.get(category.slug) ?? []}
+            places={(placesByCategory.get(category.slug) ?? []).slice(0, 8)}
           />
         ))}
 
