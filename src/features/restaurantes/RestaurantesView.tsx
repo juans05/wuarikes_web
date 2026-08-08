@@ -39,9 +39,11 @@ export function RestaurantesView({
 
   return (
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
-      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-neutral-200 bg-white/90 px-4 py-3 backdrop-blur lg:top-16 dark:border-neutral-800 dark:bg-neutral-950/90">
-        <Logo className="lg:hidden" />
-        <SearchBar value={search} onChange={setSearch} />
+      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 px-4 py-3 backdrop-blur lg:top-16 dark:border-neutral-800 dark:bg-neutral-950/90">
+        <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
+          <Logo className="lg:hidden" />
+          <SearchBar value={search} onChange={setSearch} />
+        </div>
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 p-4 lg:flex-row">

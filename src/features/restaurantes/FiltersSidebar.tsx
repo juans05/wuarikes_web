@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SlidersHorizontal, Star, X } from "lucide-react";
 import { useAmenities, useCategories } from "@/hooks/usePlaces";
 
@@ -33,6 +33,15 @@ export function FiltersSidebar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: categories } = useCategories();
   const { data: amenities } = useAmenities();
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   function toggleAmenity(slug: string) {
     const next = filters.amenities.includes(slug)
@@ -201,7 +210,12 @@ export function FiltersSidebar({
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-white p-4 shadow-xl dark:bg-neutral-950">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filtros"
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-white p-4 shadow-xl dark:bg-neutral-950"
+          >
             {content}
           </div>
         </div>
