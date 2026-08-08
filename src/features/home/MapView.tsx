@@ -57,38 +57,75 @@ export function MapView({
           icon={markerIcon}
           eventHandlers={{ click: () => onSelect?.(place) }}
         >
-          <Popup minWidth={220} maxWidth={240}>
+          <Popup minWidth={250} maxWidth={280}>
             <div className="w-full">
               {place.coverImageUrl && (
-                <div className="relative mb-2 h-28 w-full overflow-hidden rounded-lg bg-neutral-200">
+                <div className="relative mb-2 h-32 w-full overflow-hidden rounded-lg bg-neutral-200">
                   <Image
                     src={place.coverImageUrl}
                     alt={place.name}
                     fill
-                    sizes="240px"
+                    sizes="280px"
                     className="object-cover"
                   />
                 </div>
               )}
-              <p className="font-medium text-neutral-900">{place.name}</p>
-              <p className="text-xs text-neutral-500">
-                {place.category?.name}
-                {place.district?.name ? ` · ${place.district.name}` : ""}
-              </p>
-              <div className="mt-1 flex items-center gap-1.5 text-xs">
-                <RatingStars rating={place.rating} size={12} />
-                <span className="text-neutral-500">
-                  {place.rating.toFixed(1)} ({place.totalReviews})
-                </span>
+
+              {(place.category || place.tags.length > 0) && (
+                <div className="mb-1.5 flex flex-wrap gap-1">
+                  {place.category && (
+                    <span className="rounded-full border border-primary/30 px-2 py-0.5 text-[10px] font-medium text-primary">
+                      {place.category.name}
+                    </span>
+                  )}
+                  {place.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag.id}
+                      className="rounded-full border border-neutral-200 px-2 py-0.5 text-[10px] font-medium text-neutral-500"
+                    >
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <p className="font-semibold text-neutral-900">{place.name}</p>
+
+              {place.description && (
+                <p className="mt-0.5 line-clamp-2 text-xs text-neutral-500">
+                  {place.description}
+                </p>
+              )}
+
+              {place.address && (
+                <p className="mt-1 line-clamp-1 text-[11px] text-neutral-400">{place.address}</p>
+              )}
+
+              <div className="mt-2 flex items-end justify-between">
+                <div>
+                  <p className="text-[10px] tracking-wide text-neutral-400 uppercase">
+                    Calificación
+                  </p>
+                  <div className="mt-0.5 flex items-center gap-1.5 text-xs">
+                    <RatingStars rating={place.rating} size={12} />
+                    <span className="text-neutral-500">
+                      {place.rating.toFixed(1)} ({place.totalReviews})
+                    </span>
+                  </div>
+                </div>
                 {place.averagePrice != null && (
-                  <span className="ml-auto font-medium text-primary">
-                    S/ {place.averagePrice.toFixed(0)}
-                  </span>
+                  <div className="text-right">
+                    <p className="text-[10px] text-neutral-400">Desde</p>
+                    <p className="text-sm font-semibold text-primary">
+                      S/ {place.averagePrice.toFixed(0)}
+                    </p>
+                  </div>
                 )}
               </div>
+
               <a
                 href={`/restaurantes/${place.id}`}
-                className="mt-2 block rounded-lg bg-primary px-3 py-1.5 text-center text-xs font-semibold text-white hover:bg-primary-600"
+                className="mt-2 block rounded-lg bg-primary px-3 py-2 text-center text-xs font-semibold text-white hover:bg-primary-600"
               >
                 Ver más
               </a>
