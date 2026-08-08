@@ -60,8 +60,8 @@ export function MapView({
         >
           <Popup minWidth={250} maxWidth={280}>
             <div className="w-full">
-              <div className="relative mb-2 aspect-[4/3] w-full overflow-hidden rounded-lg bg-neutral-200 dark:bg-neutral-800">
-                {place.coverImageUrl && (
+              <div className="relative mb-2 aspect-[4/3] w-full overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
+                {place.coverImageUrl ? (
                   <Image
                     src={place.coverImageUrl}
                     alt={place.name}
@@ -69,6 +69,16 @@ export function MapView({
                     sizes="280px"
                     className="object-cover"
                   />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Image
+                      src="/logo-icon.jpg"
+                      alt=""
+                      width={56}
+                      height={56}
+                      className="h-12 w-12 rounded-xl opacity-60 shadow-sm"
+                    />
+                  </div>
                 )}
               </div>
 
@@ -100,7 +110,7 @@ export function MapView({
 
               {place.address && (
                 <div className="mt-1 flex items-center gap-1.5">
-                  <p className="line-clamp-1 flex-1 text-[11px] text-neutral-400">
+                  <p className="line-clamp-1 min-w-0 flex-1 text-[11px] text-neutral-400">
                     {place.address}
                   </p>
                   <OpenNowBadge openHoursText={place.openHoursText} />
