@@ -16,7 +16,7 @@ import {
   UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
-import { useCategories } from "@/hooks/usePlaces";
+import type { Category } from "@/types/place";
 
 const ICONS_BY_SLUG: Record<string, LucideIcon> = {
   buffet: UtensilsCrossed,
@@ -39,9 +39,8 @@ const ICONS_BY_SLUG: Record<string, LucideIcon> = {
 
 const TILE_COLORS = ["bg-primary", "bg-secondary", "bg-accent", "bg-neutral-800"];
 
-export function CategoryTiles() {
-  const { data: categories } = useCategories();
-  if (!categories || categories.length === 0) return null;
+export function CategoryTiles({ categories }: { categories: Category[] }) {
+  if (categories.length === 0) return null;
 
   return (
     <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]">
@@ -50,7 +49,7 @@ export function CategoryTiles() {
         return (
           <Link
             key={category.id}
-            href={`/restaurantes?categoria=${category.slug}`}
+            href={`/restaurantes?categoria=${encodeURIComponent(category.slug)}`}
             className={`flex w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-2xl py-6 text-white transition hover:opacity-90 ${TILE_COLORS[i % TILE_COLORS.length]}`}
           >
             <Icon size={26} />

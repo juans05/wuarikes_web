@@ -2,14 +2,10 @@
 
 import Link from "next/link";
 import { PlaceCard } from "@/components/ui/PlaceCard";
-import { usePlaces } from "@/hooks/usePlaces";
-import type { Category } from "@/types/place";
+import type { Category, Place } from "@/types/place";
 
-export function CategoryRow({ category }: { category: Category }) {
-  const { data, isLoading } = usePlaces({ category: category.slug, limit: 8 });
-  const places = data?.data ?? [];
-
-  if (isLoading || places.length === 0) return null;
+export function CategoryRow({ category, places }: { category: Category; places: Place[] }) {
+  if (places.length === 0) return null;
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4">
@@ -18,7 +14,7 @@ export function CategoryRow({ category }: { category: Category }) {
           Wuarikes recomienda: {category.name}
         </h2>
         <Link
-          href={`/restaurantes?categoria=${category.slug}`}
+          href={`/restaurantes?categoria=${encodeURIComponent(category.slug)}`}
           className="shrink-0 text-sm font-semibold text-primary hover:underline"
         >
           Ver todos →
