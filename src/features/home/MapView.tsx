@@ -5,6 +5,7 @@ import Image from "next/image";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { OpenNowBadge } from "@/components/common/OpenNowBadge";
 import { RatingStars } from "@/components/common/RatingStars";
 import type { Place } from "@/types/place";
 
@@ -98,7 +99,12 @@ export function MapView({
               )}
 
               {place.address && (
-                <p className="mt-1 line-clamp-1 text-[11px] text-neutral-400">{place.address}</p>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <p className="line-clamp-1 flex-1 text-[11px] text-neutral-400">
+                    {place.address}
+                  </p>
+                  <OpenNowBadge openHoursText={place.openHoursText} />
+                </div>
               )}
 
               <div className="mt-2 flex items-end justify-between">
