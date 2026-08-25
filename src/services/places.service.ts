@@ -23,7 +23,7 @@ function normalizeNamedList<T extends { id: string; name: string }>(
 }
 
 // El backend usa columnas `decimal` en Postgres, que TypeORM serializa como string.
-function normalizePlace(raw: Place): Place {
+export function normalizePlace(raw: Place): Place {
   return {
     ...raw,
     rating: Number(raw.rating),
@@ -46,10 +46,21 @@ function normalizePlace(raw: Place): Place {
 }
 
 export async function getPlaces(query: PlacesQuery) {
-  const { data } = await apiClient.get<PaginatedResponse<Place>>("/places", {
+  // GET /places responde { data, meta: { total, page, size } } (distinto del
+  // resto de endpoints paginados, que devuelven total/page/limit planos).
+  // Se normaliza acá para que PaginatedResponse<Place> sea siempre plano.
+  const { data } = await apiClient.get<{
+    data: Place[];
+    meta: { total: number; page: number; size: number };
+  }>("/places", {
     params: { ...query, amenities: query.amenities?.join(",") },
   });
-  return { ...data, data: data.data.map(normalizePlace) };
+  return {
+    data: data.data.map(normalizePlace),
+    total: data.meta.total,
+    page: data.meta.page,
+    limit: data.meta.size,
+  } satisfies PaginatedResponse<Place>;
 }
 
 export async function getPlace(id: string) {
@@ -68,6 +79,54 @@ export async function getPlaceMenu(id: string) {
       price: Number(dish.price),
     })),
   }));
+}
+
+export interface RatingDistributionEntry {
+  rating: number;
+  count: number;
+}
+
+export async function getRatingDistribution(id: string) {
+  const { data } = await apiClient.get<RatingDistributionEntry[]>(
+    `/places/${id}/rating-distribution`,
+  );
+  return data;
+}
+
+export interface TikTokVideo {
+  url: string;
+  thumbnailUrl: string | null;
+  caption: string | null;
+  authorName: string | null;
+}
+
+export interface TikTokSearchResult {
+  videos: TikTokVideo[];
+  available: boolean;
+}
+
+// Revisa metadata.tiktokVideos en la DB primero; si no hay nada cacheado,
+// el backend busca en TikTok en caliente (puede tardar bastante) y lo
+// guarda para la próxima vez. `available: false` = el scraper no está
+// disponible en este entorno (p.ej. producción sin Python instalado).
+export async function searchTikTok(id: string) {
+  const { data } = await apiClient.post<TikTokSearchResult>(`/places/${id}/tiktok-search`);
+  return data;
+}
+
+export interface Promotion {
+  id: string;
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+  startsAt: string | null;
+  endsAt: string | null;
+  isActive: boolean;
+}
+
+export async function getPromotions(id: string) {
+  const { data } = await apiClient.get<Promotion[]>(`/places/${id}/promotions`);
+  return data;
 }
 
 export async function getCategories() {

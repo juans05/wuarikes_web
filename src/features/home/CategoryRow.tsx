@@ -8,7 +8,7 @@ export function CategoryRow({ category, places }: { category: Category; places: 
   if (places.length === 0) return null;
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-4">
+    <section className="mx-auto w-full max-w-[1600px] px-4">
       <div className="mb-4 flex items-end justify-between">
         <h2 className="font-heading text-xl font-bold text-neutral-900 dark:text-neutral-50">
           Wuarikes recomienda: {category.name}

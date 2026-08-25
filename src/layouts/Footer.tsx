@@ -32,7 +32,7 @@ const SOCIAL_LINKS = [
 export function Footer() {
   return (
     <footer className="mb-16 bg-neutral-900 px-6 py-10 text-neutral-300 lg:mb-0">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:flex-row sm:justify-between">
+      <div className="mx-auto flex max-w-[1600px] flex-col gap-8 sm:flex-row sm:justify-between">
         <div>
           <Logo light />
           <p className="mt-2 max-w-xs text-sm text-neutral-400">
@@ -70,7 +70,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 max-w-6xl border-t border-neutral-800 pt-6 text-xs text-neutral-500">
+      <div className="mx-auto mt-8 max-w-[1600px] border-t border-neutral-800 pt-6 text-xs text-neutral-500">
         © {new Date().getFullYear()} Wuarikes. Hecho en Perú.
       </div>
     </footer>

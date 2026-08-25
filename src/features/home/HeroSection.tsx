@@ -3,7 +3,7 @@ import { HeroSearchBar } from "./HeroSearchBar";
 export function HeroSection() {
   return (
     <section className="rounded-b-[2.5rem] bg-gradient-to-br from-primary-100 via-white to-secondary/20 px-4 pt-10 pb-10 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 text-center md:flex-row md:text-left">
+      <div className="mx-auto flex max-w-[1600px] flex-col items-center gap-6 text-center md:flex-row md:text-left">
         <div className="flex-1">
           <h1 className="font-heading text-3xl font-bold text-neutral-900 md:text-5xl dark:text-neutral-50">
             Encuentra tu huarique favorito y vive una nueva experiencia

@@ -1,0 +1,7 @@
+{
+  "tool_name": "mcp__claude_ai_Resend__get-email",
+  "tool_input_preview": "{\"id\":\"4d974993-0edd-40ab-ac96-07a52c578ae2\"}",
+  "error": "Failed to retrieve email: {\"statusCode\":404,\"message\":\"Email not found\",\"name\":\"not_found\"}",
+  "timestamp": "2026-08-07T01:02:03.115Z",
+  "retry_count": 1
+}

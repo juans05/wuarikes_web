@@ -68,7 +68,7 @@ export function PlaceCard({
             {place.category?.name}
             {place.district?.name ? ` · ${place.district.name}` : ""}
           </p>
-          <OpenNowBadge openHoursText={place.openHoursText} />
+          <OpenNowBadge openHoursText={place.openHoursText} openingHours={place.openingHours} />
         </div>
 
         {place.address && (

@@ -1,0 +1,50 @@
+<h2>¿Qué dirección de layout para el perfil rediseñado?</h2>
+<p class="subtitle">Usan datos reales que ya existen: avatar, bio, nivel, puntos, check-ins, seguidores/seguidos, badges. Color de marca: Rich Rocoto Red (#c84b31).</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#c84b31,#e05d44);position:relative;font-family:sans-serif;">
+        <div style="position:absolute;bottom:-28px;left:20px;width:64px;height:64px;border-radius:50%;background:#f0bca8;border:3px solid white;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Portada tipo Yelp</h3>
+      <p>Cover photo de ancho completo (color de marca o foto), avatar superpuesto abajo-izquierda. Debajo: nombre, nivel, bio, stats en fila, luego grid de badges. Más impacto visual, más parecido a las capturas originales.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:#fdf1ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#c84b31;margin-bottom:6px;"></div>
+        <div style="width:80px;height:8px;background:#8a311f;border-radius:4px;margin-bottom:4px;"></div>
+        <div style="width:110px;height:5px;background:#e79880;border-radius:3px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Hero centrado (evolución del actual)</h3>
+      <p>Sin cover photo. Todo centrado en una tarjeta: avatar grande, nombre, bio debajo del nombre, stats en fila, badges como tira horizontal scrolleable debajo. Cambio más discreto sobre lo que ya existe.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:#4d1c11;display:flex;align-items:center;justify-content:center;font-family:sans-serif;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#f0bca8;border:3px solid white;"></div>
+        <div style="position:absolute;bottom:10px;left:0;right:0;height:24px;background:rgba(255,255,255,0.15);"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Banda de marca + sidebar de Logros</h3>
+      <p>Banda superior sólida en color de marca (no foto) con avatar centrado. Debajo, dos columnas: sidebar de "Tus Logros" (como en la captura de Yelp) a la izquierda, bio + stats a la derecha. Más denso, más "dashboard".</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="section">
+  <p class="label">Nota</p>
+  <p class="subtitle">No incluyo tabs de "Fotos / Opiniones / Viajes" — esos contadores siempre vienen en 0 desde el backend hoy, así que mostrarlos sería mentir con la UI.</p>
+</div>

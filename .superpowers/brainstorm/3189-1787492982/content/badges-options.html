@@ -1,0 +1,55 @@
+<h2>Layout A confirmado. ¿Cómo mostramos los logros/badges dentro de ese layout?</h2>
+<p class="subtitle">El endpoint /gamification/badges ya trae todos los badges con estado bloqueado/desbloqueado — no es dato falso.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:#fdf1ee;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:16px;align-content:center;">
+        <div style="aspect-ratio:1;border-radius:12px;background:#c84b31;"></div>
+        <div style="aspect-ratio:1;border-radius:12px;background:#c84b31;"></div>
+        <div style="aspect-ratio:1;border-radius:12px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;color:#999;font-size:18px;">🔒</div>
+        <div style="aspect-ratio:1;border-radius:12px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;color:#999;font-size:18px;">🔒</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Grid completo (ganados + bloqueados)</h3>
+      <p>Como "Tus Logros" en Yelp: cuadrícula con TODOS los badges, los bloqueados en gris con candado. Motiva a completar más. Ocupa más espacio vertical.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:#fdf1ee;display:flex;align-items:center;gap:8px;padding:16px;overflow:hidden;">
+        <div style="width:48px;height:48px;border-radius:50%;background:#c84b31;flex-shrink:0;"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#c84b31;flex-shrink:0;"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#c84b31;flex-shrink:0;"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#f8ded4;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8a311f;flex-shrink:0;">+5</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Tira horizontal (solo ganados + contador)</h3>
+      <p>Solo los badges ya desbloqueados en scroll horizontal, con un círculo "+N" al final que lleva a la vista completa. Compacto, no ocupa espacio si el usuario tiene pocos badges.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="width:100%;height:100%;background:#fdf1ee;display:flex;flex-direction:column;justify-content:center;padding:16px;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:#c84b31;flex-shrink:0;"></div>
+          <div style="height:6px;width:70%;background:#8a311f;border-radius:3px;"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:#e0e0e0;flex-shrink:0;"></div>
+          <div style="height:6px;width:50%;background:#ccc;border-radius:3px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Lista compacta con "próximo logro"</h3>
+      <p>Como el bloque "Tus Logros" de la primera captura: 1-2 badges ganados destacados + el siguiente logro por desbloquear con su requisito. Menos denso, más orientado a "qué sigue".</p>
+    </div>
+  </div>
+
+</div>

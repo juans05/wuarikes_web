@@ -1,6 +1,6 @@
 export function HostCTASection() {
   return (
-    <section className="relative mx-4 overflow-hidden rounded-3xl bg-neutral-900 px-6 py-14 text-center sm:mx-auto sm:max-w-6xl sm:px-16 sm:text-left">
+    <section className="relative mx-4 overflow-hidden rounded-3xl bg-neutral-900 px-6 py-14 text-center sm:mx-auto sm:max-w-[1600px] sm:px-16 sm:text-left">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">

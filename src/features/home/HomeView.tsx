@@ -35,7 +35,7 @@ export function HomeView() {
       <HeroSection />
 
       {categoriesWithPlaces.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4">
+        <section className="mx-auto w-full max-w-[1600px] px-4">
           <h2 className="mb-4 font-heading text-xl font-bold text-neutral-900 dark:text-neutral-50">
             Explora por categoría
           </h2>
@@ -44,7 +44,7 @@ export function HomeView() {
       )}
 
       {isLoading && (
-        <section className="mx-auto w-full max-w-6xl px-4">
+        <section className="mx-auto w-full max-w-[1600px] px-4">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <PlaceCardSkeleton key={i} />
@@ -54,7 +54,7 @@ export function HomeView() {
       )}
 
       {isError && (
-        <section className="mx-auto w-full max-w-6xl px-4">
+        <section className="mx-auto w-full max-w-[1600px] px-4">
           <p className="py-8 text-center text-sm text-red-500">
             No se pudo conectar con el backend. Verifica que huarique_backend esté corriendo.
           </p>

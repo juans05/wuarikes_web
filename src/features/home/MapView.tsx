@@ -44,7 +44,10 @@ export function MapView({
       center={LIMA_CENTER}
       zoom={12}
       scrollWheelZoom
-      className="h-full w-full"
+      // Leaflet's own panes/controls use z-index up to 1000, higher than the
+      // sticky navbar (z-30) — `isolate` contains that stacking context so it
+      // can never paint above elements outside the map on scroll.
+      className="isolate h-full w-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -113,7 +116,7 @@ export function MapView({
                   <p className="line-clamp-1 min-w-0 flex-1 text-[11px] text-neutral-400">
                     {place.address}
                   </p>
-                  <OpenNowBadge openHoursText={place.openHoursText} />
+                  <OpenNowBadge openHoursText={place.openHoursText} openingHours={place.openingHours} />
                 </div>
               )}
 

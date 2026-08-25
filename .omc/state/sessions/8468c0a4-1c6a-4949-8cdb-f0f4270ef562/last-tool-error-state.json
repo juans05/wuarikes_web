@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"for i in $(seq 1 90); do\\n  if grep -qE \\\"successfully started|EADDRINUSE|error TS\\\" /tmp/backend.log 2>/dev/null; then break; fi\\n  sleep 2\\ndone\\ngrep -qE \\\"successfully started\\\" /tmp/b...",
+  "error": "Exit code 143\nCommand timed out after 3m 10s",
+  "timestamp": "2026-08-22T00:59:33.154Z",
+  "retry_count": 1
+}

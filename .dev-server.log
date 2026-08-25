@@ -1,0 +1,254 @@
+
+> wuarikes_web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.18.52:3000
+- Environments: .env.local
+✓ Ready in 1194ms
+✓ Running next.config.ts took 61ms
+
+○ Compiling /restaurantes/[id] ...
+ GET / 200 in 145ms (next.js: 33ms, application-code: 112ms)
+ GET / 200 in 6.8s (next.js: 5.4s, application-code: 1378ms)
+ GET /agregar-restaurante 200 in 6.8s (next.js: 5.6s, application-code: 1189ms)
+ GET /restaurantes/e6c4a69c-37e2-418c-b4e3-f65386624045 200 in 8.9s (next.js: 7.3s, application-code: 1587ms)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `RestaurantView`. See https://react.dev/link/warning-keys for more information. 
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 607ms (next.js: 27ms, application-code: 580ms)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `RestaurantView`. See https://react.dev/link/warning-keys for more information. 
+ GET / 200 in 360ms (next.js: 173ms, application-code: 187ms)
+ GET / 200 in 113ms (next.js: 16ms, application-code: 97ms)
+ GET / 200 in 133ms (next.js: 21ms, application-code: 112ms)
+ GET /restaurantes 200 in 2.8s (next.js: 2.7s, application-code: 80ms)
+ GET /perfil 200 in 797ms (next.js: 726ms, application-code: 71ms)
+ GET / 200 in 447ms (next.js: 245ms, application-code: 202ms)
+ GET /restaurantes/e6c4a69c-37e2-418c-b4e3-f65386624045 200 in 1384ms (next.js: 25ms, application-code: 1359ms)
+ GET /restaurantes/e6c4a69c-37e2-418c-b4e3-f65386624045 200 in 2.3s (next.js: 435ms, application-code: 1818ms)
+ GET /restaurantes/e6c4a69c-37e2-418c-b4e3-f65386624045 200 in 1498ms (next.js: 19ms, application-code: 1479ms)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `RestaurantView`. See https://react.dev/link/warning-keys for more information. 
+ GET / 200 in 213ms (next.js: 138ms, application-code: 75ms)
+ GET /restaurantes 200 in 750ms (next.js: 406ms, application-code: 344ms)
+ GET /agregar-restaurante 200 in 267ms (next.js: 187ms, application-code: 80ms)
+ GET /perfil 200 in 171ms (next.js: 112ms, application-code: 60ms)
+ GET / 200 in 78ms (next.js: 21ms, application-code: 57ms)
+ GET /login 200 in 2.5s (next.js: 2.4s, application-code: 87ms)
+ GET /login 200 in 96ms (next.js: 32ms, application-code: 64ms)
+ GET / 200 in 788ms (next.js: 404ms, application-code: 384ms)
+ GET /restaurantes?categoria=chifa 200 in 625ms (next.js: 346ms, application-code: 279ms)
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 1125ms (next.js: 111ms, application-code: 1014ms)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `RestaurantView`. See https://react.dev/link/warning-keys for more information. 
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 3.2s (next.js: 17ms, application-code: 3.2s)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `RestaurantView`. See https://react.dev/link/warning-keys for more information. 
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'appendChild')
+    at MapView (src/features/home/MapView.tsx:46:7)
+    at RestaurantView (src/features/restaurant/RestaurantView.tsx:147:11)
+    at RestaurantPage (src\app\restaurantes\[id]\page.tsx:95:7)
+  44 |       className="h-full w-full"
+  45 |     >
+> 46 |       <TileLayer
+     |       ^
+  47 |         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  48 |         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  49 |       />
+[browser] Uncaught Error: Map container is being reused by another instance
+    at MapContainerComponent (<anonymous>)
+ GET /agregar-restaurante 200 in 357ms (next.js: 87ms, application-code: 269ms)
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 1530ms (next.js: 41ms, application-code: 1489ms)
+ GET / 200 in 109ms (next.js: 58ms, application-code: 51ms)
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 470ms (next.js: 18ms, application-code: 452ms)
+ GET / 200 in 637ms (next.js: 211ms, application-code: 426ms)
+✓ Compiled in 465ms
+ GET / 200 in 258ms (next.js: 59ms, application-code: 200ms)
+ GET /agregar-restaurante 200 in 257ms (next.js: 151ms, application-code: 107ms)
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'length')
+    at CategoryTiles (src/features/home/CategoryTiles.tsx:43:18)
+    at HomeView (src/features/home/HomeView.tsx:25:23)
+    at Home (src\app\page.tsx:4:10)
+  41 |
+  42 | export function CategoryTiles({ categories }: { categories: Category[] }) {
+> 43 |   if (categories.length === 0) return null;
+     |                  ^
+  44 |
+  45 |   return (
+  46 |     <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]">
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 1707ms (next.js: 116ms, application-code: 1591ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 149ms
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at Set.forEach (<anonymous>) (<anonymous>)
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'length')
+    at CategoryTiles (src/features/home/CategoryTiles.tsx:43:18)
+    at Set.forEach (<anonymous>)
+    at HomeView (src/features/home/HomeView.tsx:32:22)
+    at Home (src\app\page.tsx:4:10)
+  41 |
+  42 | export function CategoryTiles({ categories }: { categories: Category[] }) {
+> 43 |   if (categories.length === 0) return null;
+     |                  ^
+  44 |
+  45 |   return (
+  46 |     <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]">
+⨯ TypeError: Cannot read properties of undefined (reading 'length')
+    at CategoryTiles (src\features\home\CategoryTiles.tsx:43:18)
+  41 |
+  42 | export function CategoryTiles({ categories }: { categories: Category[] }) {
+> 43 |   if (categories.length === 0) return null;
+     |                  ^
+  44 |
+  45 |   return (
+  46 |     <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]"> {
+  digest: '45208679'
+}
+ GET / 500 in 446ms (next.js: 142ms, application-code: 303ms)
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 682ms (next.js: 36ms, application-code: 646ms)
+ GET /agregar-restaurante 200 in 523ms (next.js: 108ms, application-code: 415ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'length')
+    at CategoryTiles (src/features/home/CategoryTiles.tsx:43:18)
+    at HomeView (src/features/home/HomeView.tsx:25:9)
+    at Home (src\app\page.tsx:4:10)
+  41 |
+  42 | export function CategoryTiles({ categories }: { categories: Category[] }) {
+> 43 |   if (categories.length === 0) return null;
+     |                  ^
+  44 |
+  45 |   return (
+  46 |     <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]">
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 366ms
+ GET / 200 in 389ms (next.js: 66ms, application-code: 323ms)
+ GET /agregar-restaurante 200 in 245ms (next.js: 24ms, application-code: 222ms)
+ GET /restaurantes/17f7a1fc-9b0c-409a-a65d-76fe4e8280ed 200 in 525ms (next.js: 30ms, application-code: 496ms)
+ GET / 200 in 117ms (next.js: 27ms, application-code: 90ms)
+ GET / 200 in 155ms (next.js: 22ms, application-code: 133ms)
+ GET / 200 in 626ms (next.js: 160ms, application-code: 466ms)
+✓ Compiled in 917ms
+ GET / 200 in 192ms (next.js: 97ms, application-code: 95ms)
+ GET /agregar-restaurante 200 in 89ms (next.js: 24ms, application-code: 65ms)
+ GET / 200 in 124ms (next.js: 17ms, application-code: 107ms)
+ GET / 200 in 107ms (next.js: 12ms, application-code: 94ms)
+ GET /restaurantes?categoria=mexicana 200 in 173ms (next.js: 131ms, application-code: 42ms)
+ GET /restaurantes?categoria=cafe 200 in 382ms (next.js: 163ms, application-code: 219ms)
+ GET /restaurantes?categoria=cafe 200 in 781ms (next.js: 177ms, application-code: 603ms)
+ GET / 200 in 617ms (next.js: 116ms, application-code: 500ms)
+✓ Compiled in 626ms
+✓ Compiled in 371ms
+ GET /restaurantes?categoria=cafe 200 in 363ms (next.js: 164ms, application-code: 199ms)
+ GET /agregar-restaurante 200 in 84ms (next.js: 18ms, application-code: 66ms)
+ GET / 200 in 134ms (next.js: 9ms, application-code: 125ms)
+ GET /restaurantes 200 in 292ms (next.js: 11ms, application-code: 280ms)
+ GET /restaurantes 200 in 115ms (next.js: 13ms, application-code: 102ms)
+ GET / 200 in 97ms (next.js: 17ms, application-code: 80ms)
+ GET / 200 in 92ms (next.js: 9ms, application-code: 83ms)
+✓ Compiled in 187ms
+ GET / 200 in 411ms (next.js: 29ms, application-code: 382ms)
+ GET /agregar-restaurante 200 in 250ms (next.js: 23ms, application-code: 227ms)
+ GET /restaurantes?categoria=cafe 200 in 232ms (next.js: 148ms, application-code: 83ms)
+✓ Compiled in 546ms
+ GET /restaurantes?categoria=cafe 200 in 178ms (next.js: 31ms, application-code: 147ms)
+ GET / 200 in 184ms (next.js: 136ms, application-code: 48ms)
+ GET /agregar-restaurante 200 in 180ms (next.js: 81ms, application-code: 100ms)
+✓ Compiled in 89ms
+ GET /restaurantes?categoria=cafe 200 in 197ms (next.js: 70ms, application-code: 127ms)
+ GET / 200 in 199ms (next.js: 27ms, application-code: 172ms)
+ GET /agregar-restaurante 200 in 81ms (next.js: 14ms, application-code: 68ms)
+ GET /restaurantes 200 in 110ms (next.js: 8ms, application-code: 101ms)
+ GET /restaurantes 200 in 109ms (next.js: 10ms, application-code: 99ms)
+✓ Compiled in 689ms
+ GET /agregar-restaurante 200 in 1333ms (next.js: 503ms, application-code: 829ms)
+ GET /restaurantes?categoria=cafe 200 in 1249ms (next.js: 926ms, application-code: 323ms)
+ GET /restaurantes 200 in 154ms (next.js: 39ms, application-code: 116ms)
+✓ Compiled in 317ms
+ GET /restaurantes?categoria=cafe 200 in 244ms (next.js: 16ms, application-code: 228ms)
+ GET /agregar-restaurante 200 in 175ms (next.js: 20ms, application-code: 156ms)
+ GET /restaurantes 200 in 162ms (next.js: 61ms, application-code: 101ms)
+✓ Compiled in 209ms
+ GET /restaurantes?categoria=cafe 200 in 235ms (next.js: 14ms, application-code: 221ms)
+ GET /agregar-restaurante 200 in 169ms (next.js: 23ms, application-code: 146ms)
+ GET /restaurantes 200 in 149ms (next.js: 61ms, application-code: 88ms)
+✓ Compiled in 280ms
+ GET /agregar-restaurante 200 in 264ms (next.js: 31ms, application-code: 233ms)
+ GET /restaurantes 200 in 268ms (next.js: 176ms, application-code: 92ms)
+ GET /restaurantes?categoria=cafe 200 in 267ms (next.js: 84ms, application-code: 184ms)
+✓ Compiled in 71ms
+ GET /restaurantes 200 in 179ms (next.js: 29ms, application-code: 151ms)
+ GET /restaurantes?categoria=cafe 200 in 178ms (next.js: 62ms, application-code: 117ms)
+ GET /agregar-restaurante 200 in 82ms (next.js: 24ms, application-code: 58ms)
+✓ Compiled in 73ms
+ GET /restaurantes?categoria=cafe 200 in 136ms (next.js: 60ms, application-code: 76ms)
+ GET /restaurantes 200 in 135ms (next.js: 21ms, application-code: 113ms)
+ GET /agregar-restaurante 200 in 49ms (next.js: 13ms, application-code: 36ms)
+✓ Compiled in 138ms
+ GET /restaurantes?categoria=cafe 200 in 147ms (next.js: 20ms, application-code: 127ms)
+ GET /restaurantes 200 in 84ms (next.js: 9ms, application-code: 75ms)
+ GET /agregar-restaurante 200 in 84ms (next.js: 47ms, application-code: 37ms)
+✓ Compiled in 259ms
+ GET /restaurantes?categoria=cafe 200 in 181ms (next.js: 26ms, application-code: 155ms)
+ GET /restaurantes 200 in 181ms (next.js: 67ms, application-code: 113ms)
+ GET /agregar-restaurante 200 in 68ms (next.js: 20ms, application-code: 48ms)
+✓ Compiled in 127ms
+ GET /restaurantes 200 in 238ms (next.js: 114ms, application-code: 125ms)
+ GET /restaurantes?categoria=cafe 200 in 244ms (next.js: 60ms, application-code: 183ms)
+ GET /agregar-restaurante 200 in 245ms (next.js: 167ms, application-code: 79ms)
+ GET /restaurantes?categoria=cafe 200 in 127ms (next.js: 10ms, application-code: 117ms)
+✓ Compiled in 140ms
+ GET /restaurantes?categoria=cafe 200 in 419ms (next.js: 147ms, application-code: 272ms)
+ GET /agregar-restaurante 200 in 113ms (next.js: 62ms, application-code: 50ms)
+ GET /restaurantes 200 in 115ms (next.js: 12ms, application-code: 103ms)
+[browser] Uncaught ReferenceError: CollapsibleSection is not defined
+    at FiltersSidebar (src/features/restaurantes/FiltersSidebar.tsx:75:8)
+    at RestaurantesView (src/features/restaurantes/RestaurantesView.tsx:65:9)
+    at RestaurantesPage (src\app\restaurantes\page.tsx:17:5)
+  73 |       </div>
+  74 |
+> 75 |       <CollapsibleSection title="Calificación">
+     |        ^
+  76 |         <div className="flex flex-col gap-1.5">
+  77 |           {RATING_TIERS.map((value) => (
+  78 |             <label key={value} className="flex items-center gap-2 text-sm">
+[browser] Uncaught ReferenceError: CollapsibleSection is not defined
+    at FiltersSidebar (src/features/restaurantes/FiltersSidebar.tsx:75:8)
+    at RestaurantesPage (src\app\restaurantes\page.tsx:17:5)
+  73 |       </div>
+  74 |
+> 75 |       <CollapsibleSection title="Calificación">
+     |        ^
+  76 |         <div className="flex flex-col gap-1.5">
+  77 |           {RATING_TIERS.map((value) => (
+  78 |             <label key={value} className="flex items-center gap-2 text-sm">
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 332ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at Set.forEach (<anonymous>) (<anonymous>)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at Set.forEach (<anonymous>) (<anonymous>)
+ GET /restaurantes?categoria=cafe 200 in 570ms (next.js: 67ms, application-code: 503ms)
+ GET /restaurantes 200 in 565ms (next.js: 121ms, application-code: 444ms)
+ GET /agregar-restaurante 200 in 154ms (next.js: 70ms, application-code: 85ms)
+ GET / 200 in 130ms (next.js: 62ms, application-code: 68ms)
+ GET /restaurantes 200 in 58ms (next.js: 7ms, application-code: 51ms)
+✓ Compiled in 143ms
+✓ Compiled in 166ms
+ GET /restaurantes 200 in 77ms (next.js: 12ms, application-code: 64ms)
+ GET /restaurantes?categoria=cafe 200 in 206ms (next.js: 30ms, application-code: 176ms)
+✓ Compiled in 498ms
+ GET /restaurantes 200 in 337ms (next.js: 114ms, application-code: 224ms)
+ GET /restaurantes?categoria=cafe 200 in 148ms (next.js: 14ms, application-code: 134ms)
+✓ Compiled in 442ms
+ GET /restaurantes 200 in 85ms (next.js: 11ms, application-code: 74ms)
