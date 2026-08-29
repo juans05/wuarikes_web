@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"D:\\\\Github\\\\wuarikes\\\\wuarikes_web\\\" && railway redeploy -s wuarikes_web -y 2>&1\",\"description\":\"Redeploy wuarikes_web service on Railway\"}",
+  "error": "Exit code 1\nThe latest deployment for service wuarikes_web cannot be redeployed. This may be because it's currently building, deploying, or was removed.",
+  "timestamp": "2026-08-25T17:58:15.838Z",
+  "retry_count": 1
+}

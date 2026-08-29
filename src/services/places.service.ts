@@ -155,3 +155,16 @@ export async function submitPlace(input: SubmitPlaceInput) {
   const { data } = await apiClient.post<{ id: string }>("/places/submit", input);
   return data;
 }
+
+export interface ClaimPlaceInput {
+  businessName: string;
+  businessEmail: string;
+  businessPhone: string;
+  whatsapp?: string;
+  documentUrls?: string[];
+}
+
+export async function claimPlace(placeId: string, input: ClaimPlaceInput) {
+  const { data } = await apiClient.post<{ id: string }>(`/places/${placeId}/claim`, input);
+  return data;
+}

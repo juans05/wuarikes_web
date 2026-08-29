@@ -27,6 +27,7 @@ export interface Place {
   coverImageUrl: string | null;
   status: "active" | "inactive" | "pending";
   isVerified: boolean;
+  claimedByUserId: string | null;
   isFeatured: boolean;
   rarity: "COMUN" | "RARO" | "EPICO" | "LEGENDARIO";
   rating: number;

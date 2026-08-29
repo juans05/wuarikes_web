@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, Globe, MapPin, Pencil, Phone } from "lucide-react";
+import { BadgeCheck, Clock, Globe, MapPin, Pencil, Phone } from "lucide-react";
 import { OpenNowBadge } from "@/components/common/OpenNowBadge";
 import type { Place } from "@/types/place";
 import { SuggestEditButton } from "./SuggestEditButton";
@@ -14,6 +14,16 @@ export function RestaurantSidebar({ place }: { place: Place }) {
         <Pencil size={16} className="shrink-0" />
         Sugerir una edición para este perfil
       </Link>
+
+      {!place.claimedByUserId && (
+        <Link
+          href={`/restaurantes/${place.id}/reclamar`}
+          className="flex items-center gap-2 rounded-2xl border border-dashed border-neutral-200 p-4 text-sm font-medium text-neutral-700 transition hover:border-primary hover:text-primary dark:border-neutral-800 dark:text-neutral-300"
+        >
+          <BadgeCheck size={16} className="shrink-0" />
+          ¿Eres el dueño? Reclama este negocio
+        </Link>
+      )}
 
       <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100 p-5 dark:border-neutral-800">
         {place.website && (

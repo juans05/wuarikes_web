@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  claimPlace,
   getAmenities,
   getCategories,
   getPlace,
@@ -74,4 +75,11 @@ export function useAmenities() {
 
 export function useSubmitPlace() {
   return useMutation({ mutationFn: submitPlace });
+}
+
+export function useClaimPlace() {
+  return useMutation({
+    mutationFn: ({ placeId, input }: { placeId: string; input: Parameters<typeof claimPlace>[1] }) =>
+      claimPlace(placeId, input),
+  });
 }

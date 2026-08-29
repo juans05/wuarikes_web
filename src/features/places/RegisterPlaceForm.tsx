@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
-import { Camera, Lock, X } from "lucide-react";
+import { Camera, CheckCircle2, Lock, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useCategories, useSubmitPlace } from "@/hooks/usePlaces";
@@ -13,6 +13,8 @@ import { useDepartments, useDistricts, useProvinces } from "@/hooks/useUbigeo";
 import { useUploadImage } from "@/hooks/useUpload";
 import { useAuthStore } from "@/stores/auth.store";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { reverseGeocode } from "@/utils/reverseGeocode";
+import { ImageCropModal } from "./ImageCropModal";
 
 const LocationPicker = dynamic(
   () => import("./LocationPicker").then((m) => m.LocationPicker),
@@ -62,7 +64,11 @@ function RegisterPlaceFormFields() {
   const [location, setLocation] = useState(LIMA_CENTER);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const geocodeRequestId = useRef(0);
 
   const {
     register,
@@ -83,26 +89,53 @@ function RegisterPlaceFormFields() {
   const submitMutation = useSubmitPlace();
   const isSubmitting = uploadMutation.isPending || submitMutation.isPending;
 
+  async function applyLocation(latitude: number, longitude: number) {
+    setLocation({ latitude, longitude });
+    const requestId = ++geocodeRequestId.current;
+    const address = await reverseGeocode(latitude, longitude);
+    if (address && requestId === geocodeRequestId.current) {
+      setValue("address", address);
+    }
+  }
+
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition((pos) =>
-      setLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+      applyLocation(pos.coords.latitude, pos.coords.longitude),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount
   }, []);
 
   function handlePhotoChange(file: File | null) {
-    setPhoto(file);
-    setPhotoPreview(file ? URL.createObjectURL(file) : null);
+    if (!file) return;
+    setRawImageSrc(URL.createObjectURL(file));
+  }
+
+  function handleCropCancel() {
+    setRawImageSrc(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function handleCropConfirm(blob: Blob) {
+    setPhoto(new File([blob], "portada.jpg", { type: blob.type }));
+    setPhotoPreview(URL.createObjectURL(blob));
+    setPhotoError(null);
+    setRawImageSrc(null);
+  }
+
+  function removePhoto() {
+    setPhoto(null);
+    setPhotoPreview(null);
   }
 
   function onSubmit(values: FormValues) {
     if (!photo) {
-      submit(values, undefined);
+      setPhotoError("Agrega una foto del lugar");
       return;
     }
     uploadMutation.mutate(photo, { onSuccess: (url) => submit(values, url) });
   }
 
-  function submit(values: FormValues, coverImageUrl: string | undefined) {
+  function submit(values: FormValues, coverImageUrl: string) {
     submitMutation.mutate(
       {
         name: values.name,
@@ -116,7 +149,7 @@ function RegisterPlaceFormFields() {
         coverImageUrl,
       },
       {
-        onSuccess: () => router.push("/"),
+        onSuccess: () => setShowSuccessModal(true),
       },
     );
   }
@@ -136,7 +169,7 @@ function RegisterPlaceFormFields() {
         <LocationPicker
           latitude={location.latitude}
           longitude={location.longitude}
-          onChange={(latitude, longitude) => setLocation({ latitude, longitude })}
+          onChange={applyLocation}
         />
         <p className="text-xs text-neutral-400">Toca el mapa para ajustar el punto exacto.</p>
       </div>
@@ -265,7 +298,7 @@ function RegisterPlaceFormFields() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium">Foto (opcional)</label>
+        <label className="text-sm font-medium">Foto</label>
         <input
           ref={fileInputRef}
           type="file"
@@ -275,7 +308,7 @@ function RegisterPlaceFormFields() {
         />
         {photoPreview ? (
           <div className="relative h-32 w-32">
-            {/* eslint-disable-next-line @next/next/no-img-element -- preview de un File local */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- preview de un Blob local */}
             <img
               src={photoPreview}
               alt=""
@@ -283,7 +316,7 @@ function RegisterPlaceFormFields() {
             />
             <button
               type="button"
-              onClick={() => handlePhotoChange(null)}
+              onClick={removePhoto}
               aria-label="Quitar foto"
               className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900/80 text-white"
             >
@@ -300,6 +333,7 @@ function RegisterPlaceFormFields() {
             Subir foto del local o platos
           </button>
         )}
+        {photoError && <p className="text-xs text-red-500">{photoError}</p>}
       </div>
 
       {submitMutation.isError && (
@@ -313,6 +347,34 @@ function RegisterPlaceFormFields() {
       >
         {isSubmitting ? "Guardando..." : "Guardar Huarique"}
       </button>
+
+      {rawImageSrc && (
+        <ImageCropModal
+          imageSrc={rawImageSrc}
+          onCancel={handleCropCancel}
+          onConfirm={handleCropConfirm}
+        />
+      )}
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/50 p-4">
+          <div className="flex w-full max-w-sm flex-col items-center gap-3 rounded-2xl bg-white p-6 text-center dark:bg-neutral-900">
+            <CheckCircle2 size={40} className="text-primary" />
+            <h2 className="font-heading text-lg font-bold">¡Registrado correctamente!</h2>
+            <p className="text-sm text-neutral-500">
+              Tu Huarique se registró correctamente. Nuestro equipo está revisando y
+              validando la información antes de publicarlo.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="mt-1 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
