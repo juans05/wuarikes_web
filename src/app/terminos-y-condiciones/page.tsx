@@ -7,6 +7,8 @@ export const metadata = {
   title: "Términos y Condiciones",
 };
 
+const ADMIN_TERMINOS_URL = "https://admin.wuarikes.com/terminos-y-condiciones";
+
 export default function TerminosPage() {
   return (
     <div className="min-h-screen px-6 py-16">
@@ -16,7 +18,7 @@ export default function TerminosPage() {
             Términos y Condiciones
           </h1>
           <p className="text-sm text-neutral-500">
-            Última actualización:{" "}
+            Aplican al uso de Wuarikes como usuario final (comensal). Última actualización:{" "}
             {new Date().toLocaleDateString("es-PE", { year: "numeric", month: "long", day: "numeric" })}
           </p>
         </header>
@@ -25,88 +27,56 @@ export default function TerminosPage() {
 
         <LegalSection title="1. Objeto">
           <p>
-            {LEGAL_PROVIDER.razonSocial} opera Wuarikes, una plataforma de descubrimiento de restaurantes y un
-            software como servicio (SaaS) de reputación y fidelización para negocios (&quot;el Servicio&quot;). El
-            Servicio se ofrece a dos tipos de usuario: (a) comensales que usan la plataforma para descubrir, reseñar
-            y hacer check-in en restaurantes, de forma gratuita; y (b) restaurantes y negocios (&quot;el Cliente&quot;)
-            que contratan una suscripción mensual (planes Reputación, Fidelización+ e IA Total) y, de forma
-            complementaria, hardware físico (expositores y stands NFC) para su uso con el Servicio. Estos Términos y
-            Condiciones regulan el acceso y uso del Servicio por ambos tipos de usuario.
+            {LEGAL_PROVIDER.razonSocial} opera Wuarikes, una plataforma gratuita de descubrimiento de restaurantes
+            (&quot;el Servicio&quot;) que permite a los usuarios buscar restaurantes, dejar reseñas, hacer check-in y
+            acumular puntos de fidelización. Estos Términos y Condiciones regulan el acceso y uso del Servicio por
+            parte de los usuarios finales (&quot;el Usuario&quot;).
           </p>
         </LegalSection>
 
         <LegalSection title="2. Aceptación">
           <p>
-            Al crear una cuenta, contratar un plan o comprar hardware a través de nuestros canales, aceptas
-            íntegramente estos Términos y Condiciones y, si corresponde, nuestra{" "}
-            <Link href="/politica-de-cambios-y-devoluciones" className="text-primary hover:underline">
-              Política de Cambios y Devoluciones
-            </Link>
-            . Si no estás de acuerdo, no debes usar el Servicio.
+            Al crear una cuenta o usar el Servicio, aceptas íntegramente estos Términos y Condiciones. Si no estás de
+            acuerdo, no debes usar el Servicio.
           </p>
         </LegalSection>
 
         <LegalSection title="3. Cuenta y registro">
           <p>
-            Para reseñar, guardar favoritos o registrar un restaurante necesitas crear una cuenta con datos
-            verídicos. Eres responsable de mantener la confidencialidad de tus credenciales de acceso y de toda
-            actividad realizada desde tu cuenta.
+            Para reseñar, guardar favoritos o hacer check-in necesitas crear una cuenta con datos verídicos. Eres
+            responsable de mantener la confidencialidad de tus credenciales de acceso y de toda actividad realizada
+            desde tu cuenta. El Servicio es gratuito para el Usuario: no cobramos por registrarte ni por usar sus
+            funciones de descubrimiento y reseñas.
           </p>
         </LegalSection>
 
         <LegalSection title="4. Contenido generado por el usuario">
           <p>
             Las reseñas, calificaciones, fotos y comentarios que publicas deben ser veraces y corresponder a tu
-            propia experiencia. Nos reservamos el derecho de moderar o retirar contenido que sea falso, ofensivo o
-            que infrinja derechos de terceros.
+            propia experiencia. Está prohibido publicar reseñas falsas, contenido difamatorio, spam, o contenido que
+            infrinja derechos de terceros. Nos reservamos el derecho de moderar o retirar contenido que incumpla lo
+            anterior, y de suspender cuentas que lo hagan de forma reiterada.
           </p>
         </LegalSection>
 
-        <LegalSection title="5. Planes, precios y facturación (negocios)">
+        <LegalSection title="5. Programa de fidelización">
           <p>
-            Los planes vigentes para restaurantes, sus características y precios se muestran en{" "}
-            <Link href="/agregar-restaurante" className="text-primary hover:underline">
-              wuarikes.com/agregar-restaurante
-            </Link>
-            . La facturación es mensual y recurrente mientras la suscripción permanezca activa. El cobro se procesa
-            mediante nuestra pasarela de pagos con la tarjeta que registre el negocio.
+            Los puntos, sellos, niveles e insignias que acumulas mediante check-ins y otras actividades dentro del
+            Servicio no tienen valor monetario, no son transferibles ni canjeables por dinero, y su vigencia y reglas
+            de canje pueden variar según lo que ofrezca cada restaurante participante.
           </p>
         </LegalSection>
 
-        <LegalSection title="6. Cancelación">
-          <p>
-            Un negocio suscrito puede cancelar su suscripción en cualquier momento, sin permanencia mínima ni
-            penalidad. Los detalles sobre reembolsos y el momento en que la cancelación surte efecto están en
-            nuestra{" "}
-            <Link href="/politica-de-cambios-y-devoluciones" className="text-primary hover:underline">
-              Política de Cambios y Devoluciones
-            </Link>
-            .
-          </p>
-        </LegalSection>
-
-        <LegalSection title="7. Venta de hardware">
-          <p>
-            Los productos físicos (expositores, stands NFC) ofrecidos a los negocios se venden de forma independiente
-            a la suscripción del Servicio. Las condiciones de cambio y devolución de estos productos se detallan en
-            nuestra{" "}
-            <Link href="/politica-de-cambios-y-devoluciones" className="text-primary hover:underline">
-              Política de Cambios y Devoluciones
-            </Link>
-            .
-          </p>
-        </LegalSection>
-
-        <LegalSection title="8. Propiedad intelectual">
+        <LegalSection title="6. Propiedad intelectual">
           <p>
             El software, la marca Wuarikes, el diseño de la plataforma y los contenidos que la componen son propiedad
-            de {LEGAL_PROVIDER.razonSocial} o de sus licenciantes. Cada usuario conserva la propiedad de las reseñas,
-            fotos y contenido que publica, y cada negocio conserva la propiedad de la información de su propio
-            restaurante que suba a la plataforma (fotos, menú, descripciones).
+            de {LEGAL_PROVIDER.razonSocial} o de sus licenciantes. Conservas la propiedad de las reseñas, fotos y
+            contenido que publicas, y al subirlos nos otorgas una licencia no exclusiva para mostrarlos dentro del
+            Servicio.
           </p>
         </LegalSection>
 
-        <LegalSection title="9. Protección de datos personales">
+        <LegalSection title="7. Protección de datos personales">
           <p>
             Tratamos los datos personales que nos proporcionas conforme a la Ley N.º 29733, Ley de Protección de
             Datos Personales, y su reglamento. Los detalles sobre qué datos recolectamos, para qué los usamos y con
@@ -118,23 +88,23 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="10. Limitación de responsabilidad">
+        <LegalSection title="8. Limitación de responsabilidad">
           <p>
             El Servicio se brinda &quot;tal cual&quot;. {LEGAL_PROVIDER.razonSocial} no garantiza la exactitud de la
-            información publicada por restaurantes ni por otros usuarios (horarios, precios, disponibilidad), y no
-            responde por interrupciones atribuibles a terceros (proveedores de internet, pasarela de pagos, redes
-            sociales) fuera de su control razonable.
+            información publicada por los restaurantes ni por otros usuarios (horarios, precios, disponibilidad), y
+            no responde por interrupciones atribuibles a terceros (proveedores de internet, redes sociales) fuera de
+            su control razonable.
           </p>
         </LegalSection>
 
-        <LegalSection title="11. Modificaciones">
+        <LegalSection title="9. Modificaciones">
           <p>
             Podemos actualizar estos Términos para reflejar cambios en el Servicio o en la normativa aplicable.
             Publicaremos la versión vigente en esta misma página con su fecha de actualización.
           </p>
         </LegalSection>
 
-        <LegalSection title="12. Ley aplicable y reclamos">
+        <LegalSection title="10. Ley aplicable y reclamos">
           <p>
             Estos Términos se rigen por las leyes de la República del Perú. Si tienes un reclamo o queja como
             consumidor, puedes usar nuestro{" "}
@@ -144,6 +114,17 @@ export default function TerminosPage() {
             o escribirnos a{" "}
             <a href={`mailto:${LEGAL_PROVIDER.correo}`} className="text-primary hover:underline">
               {LEGAL_PROVIDER.correo}
+            </a>
+            .
+          </p>
+        </LegalSection>
+
+        <LegalSection title="11. ¿Eres dueño de un restaurante?">
+          <p>
+            Estos Términos aplican solo al uso de Wuarikes como usuario final. Si quieres registrar tu negocio y
+            contratar el Servicio para restaurantes (planes de reputación y fidelización, hardware NFC), consulta los{" "}
+            <a href={ADMIN_TERMINOS_URL} className="text-primary hover:underline">
+              Términos y Condiciones del Servicio para Negocios
             </a>
             .
           </p>
