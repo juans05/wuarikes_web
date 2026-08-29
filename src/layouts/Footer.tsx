@@ -26,7 +26,6 @@ const COLUMNS = [
     links: [
       { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
       { href: "/politica-de-privacidad", label: "Política de Privacidad" },
-      { href: "/politica-de-cambios-y-devoluciones", label: "Cambios y Devoluciones" },
       { href: "/libro-de-reclamaciones", label: "Libro de Reclamaciones" },
     ],
   },
