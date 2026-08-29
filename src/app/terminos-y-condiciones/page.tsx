@@ -41,33 +41,66 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="3. Cuenta y registro">
+        <LegalSection title="3. Edad mínima y capacidad">
+          <p>
+            Wuarikes no está dirigido a menores de 18 años. Para crear una cuenta y usar las funciones del Servicio
+            (reseñas, check-ins, fidelización) declaras tener al menos 18 años y capacidad legal para contratar.
+            Puedes usar las funciones de búsqueda y descubrimiento sin necesidad de una cuenta.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="4. Cuenta y registro">
           <p>
             Para reseñar, guardar favoritos o hacer check-in necesitas crear una cuenta con datos verídicos. Eres
             responsable de mantener la confidencialidad de tus credenciales de acceso y de toda actividad realizada
-            desde tu cuenta. El Servicio es gratuito para el Usuario: no cobramos por registrarte ni por usar sus
-            funciones de descubrimiento y reseñas.
+            desde tu cuenta. Tu cuenta es personal e intransferible: no puedes cederla, venderla ni compartir tus
+            credenciales con terceros. El Servicio es gratuito para el Usuario: no cobramos por registrarte ni por
+            usar sus funciones de descubrimiento y reseñas.
           </p>
         </LegalSection>
 
-        <LegalSection title="4. Contenido generado por el usuario">
+        <LegalSection title="5. Conductas prohibidas">
+          <p>Al usar el Servicio, te comprometes a no:</p>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Crear más de una cuenta para manipular reseñas, calificaciones o el sistema de puntos.</li>
+            <li>Publicar reseñas falsas, calificaciones fraudulentas o contenido pagado sin declararlo como tal.</li>
+            <li>Suplantar la identidad de otra persona o de un negocio.</li>
+            <li>Usar bots, scraping automatizado o cualquier medio automatizado para extraer datos de la plataforma.</li>
+            <li>Usar el Servicio para acosar, amenazar o difamar a un restaurante, sus colaboradores u otros usuarios.</li>
+            <li>Intentar vulnerar la seguridad de la plataforma o acceder a cuentas ajenas sin autorización.</li>
+          </ul>
+        </LegalSection>
+
+        <LegalSection title="6. Contenido generado por el usuario">
           <p>
             Las reseñas, calificaciones, fotos y comentarios que publicas deben ser veraces y corresponder a tu
-            propia experiencia. Está prohibido publicar reseñas falsas, contenido difamatorio, spam, o contenido que
-            infrinja derechos de terceros. Nos reservamos el derecho de moderar o retirar contenido que incumpla lo
-            anterior, y de suspender cuentas que lo hagan de forma reiterada.
+            propia experiencia. Nos reservamos el derecho de moderar o retirar contenido que incumpla estos Términos,
+            y de suspender cuentas que lo hagan de forma reiterada.
           </p>
         </LegalSection>
 
-        <LegalSection title="5. Programa de fidelización">
+        <LegalSection title="7. Programa de fidelización">
           <p>
             Los puntos, sellos, niveles e insignias que acumulas mediante check-ins y otras actividades dentro del
-            Servicio no tienen valor monetario, no son transferibles ni canjeables por dinero, y su vigencia y reglas
-            de canje pueden variar según lo que ofrezca cada restaurante participante.
+            Servicio no tienen valor monetario, no son transferibles ni canjeables por dinero. Pueden vencer por
+            inactividad prolongada de tu cuenta (más de 12 meses sin actividad) o cuando el restaurante que los
+            emitió discontinúe su programa de fidelización; en ese caso, los puntos asociados a ese restaurante se
+            pierden sin derecho a compensación. Podemos modificar o discontinuar el programa de fidelización en
+            cualquier momento.
           </p>
         </LegalSection>
 
-        <LegalSection title="6. Propiedad intelectual">
+        <LegalSection title="8. Relación con los restaurantes">
+          <p>
+            Wuarikes es un intermediario tecnológico: no es dueño, no opera ni es parte de los restaurantes listados
+            en la plataforma. No vendemos comida ni bebidas ni procesamos pagos entre tú y el restaurante, y no
+            somos responsables de la calidad, higiene, precios o disponibilidad de lo que ofrece cada negocio, ni de
+            disputas entre tú y el restaurante. Cualquier reclamo sobre el servicio recibido en un restaurante debe
+            dirigirse directamente a ese negocio.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="9. Propiedad intelectual">
           <p>
             El software, la marca Wuarikes, el diseño de la plataforma y los contenidos que la componen son propiedad
             de {LEGAL_PROVIDER.razonSocial} o de sus licenciantes. Conservas la propiedad de las reseñas, fotos y
@@ -76,7 +109,7 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="7. Protección de datos personales">
+        <LegalSection title="10. Protección de datos personales">
           <p>
             Tratamos los datos personales que nos proporcionas conforme a la Ley N.º 29733, Ley de Protección de
             Datos Personales, y su reglamento. Los detalles sobre qué datos recolectamos, para qué los usamos y con
@@ -88,7 +121,15 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="8. Limitación de responsabilidad">
+        <LegalSection title="11. Disponibilidad del servicio">
+          <p>
+            Nos esforzamos por mantener el Servicio disponible, pero no garantizamos que funcione de forma
+            ininterrumpida o libre de errores. Podemos modificar, suspender o discontinuar funciones del Servicio en
+            cualquier momento, incluyendo por mantenimiento, mejoras o razones fuera de nuestro control razonable.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="12. Limitación de responsabilidad">
           <p>
             El Servicio se brinda &quot;tal cual&quot;. {LEGAL_PROVIDER.razonSocial} no garantiza la exactitud de la
             información publicada por los restaurantes ni por otros usuarios (horarios, precios, disponibilidad), y
@@ -97,17 +138,55 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="9. Modificaciones">
+        <LegalSection title="13. Indemnización">
           <p>
-            Podemos actualizar estos Términos para reflejar cambios en el Servicio o en la normativa aplicable.
-            Publicaremos la versión vigente en esta misma página con su fecha de actualización.
+            Aceptas indemnizar y mantener indemne a {LEGAL_PROVIDER.razonSocial} frente a cualquier reclamo, daño o
+            gasto razonable (incluyendo honorarios legales) que surja de tu incumplimiento de estos Términos o del
+            uso indebido del Servicio, incluyendo contenido que publiques y que genere un reclamo de un tercero.
           </p>
         </LegalSection>
 
-        <LegalSection title="10. Ley aplicable y reclamos">
+        <LegalSection title="14. Suspensión y terminación de cuenta">
           <p>
-            Estos Términos se rigen por las leyes de la República del Perú. Si tienes un reclamo o queja como
-            consumidor, puedes usar nuestro{" "}
+            Podemos suspender o cerrar tu cuenta si incumples estos Términos, sin perjuicio de otras acciones que
+            correspondan conforme a la ley. Puedes cerrar tu cuenta en cualquier momento escribiéndonos a{" "}
+            <a href={`mailto:${LEGAL_PROVIDER.correo}`} className="text-primary hover:underline">
+              {LEGAL_PROVIDER.correo}
+            </a>
+            . Al cerrar tu cuenta, las secciones que por su naturaleza deban continuar vigentes (propiedad
+            intelectual, indemnización, ley aplicable) permanecen aplicables.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="15. Modificaciones">
+          <p>
+            Podemos actualizar estos Términos para reflejar cambios en el Servicio o en la normativa aplicable.
+            Publicaremos la versión vigente en esta misma página con su fecha de actualización, y te avisaremos de
+            cambios sustanciales por correo electrónico o mediante un aviso dentro de la plataforma. El uso
+            continuado del Servicio después de una actualización implica tu aceptación de los nuevos Términos.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="16. Cesión">
+          <p>
+            Podemos ceder o transferir estos Términos, total o parcialmente, en caso de fusión, adquisición o venta
+            de activos, sin necesidad de tu consentimiento previo. Tú no puedes ceder tus derechos u obligaciones
+            bajo estos Términos sin nuestro consentimiento por escrito.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="17. Divisibilidad">
+          <p>
+            Si alguna disposición de estos Términos es declarada inválida o inaplicable por una autoridad competente,
+            las demás disposiciones continuarán vigentes.
+          </p>
+        </LegalSection>
+
+        <LegalSection title="18. Ley aplicable, jurisdicción y reclamos">
+          <p>
+            Estos Términos se rigen por las leyes de la República del Perú. Ante cualquier controversia, las partes
+            se someten a la jurisdicción de los jueces y tribunales de Lima, sin perjuicio de tu derecho como
+            consumidor a presentar tu reclamo ante el INDECOPI. Si tienes un reclamo o queja, puedes usar nuestro{" "}
             <Link href="/libro-de-reclamaciones" className="text-primary hover:underline">
               Libro de Reclamaciones
             </Link>{" "}
@@ -119,7 +198,7 @@ export default function TerminosPage() {
           </p>
         </LegalSection>
 
-        <LegalSection title="11. ¿Eres dueño de un restaurante?">
+        <LegalSection title="19. ¿Eres dueño de un restaurante?">
           <p>
             Estos Términos aplican solo al uso de Wuarikes como usuario final. Si quieres registrar tu negocio y
             contratar el Servicio para restaurantes (planes de reputación y fidelización, hardware NFC), consulta los{" "}
