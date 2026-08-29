@@ -21,6 +21,15 @@ const COLUMNS = [
     title: "Ayuda",
     links: [{ href: "mailto:contacto@wuarikes.com", label: "Contacto" }],
   },
+  {
+    title: "Legal",
+    links: [
+      { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
+      { href: "/politica-de-privacidad", label: "Política de Privacidad" },
+      { href: "/politica-de-cambios-y-devoluciones", label: "Cambios y Devoluciones" },
+      { href: "/libro-de-reclamaciones", label: "Libro de Reclamaciones" },
+    ],
+  },
 ];
 
 const SOCIAL_LINKS = [
