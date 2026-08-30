@@ -262,7 +262,7 @@ function AuthenticatedProfile() {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[300px_1fr]">
-        <div className="flex flex-col gap-4">
+        <div className="order-2 flex flex-col gap-4 md:order-1">
           <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-950">
             <h2 className="text-sm font-bold">Tus Logros</h2>
             <p className="mt-1 text-xs text-neutral-500">
@@ -384,7 +384,9 @@ function AuthenticatedProfile() {
           </div>
         </div>
 
-        <TabContent tab={activeTab} profile={profile} />
+        <div className="order-1 md:order-2">
+          <TabContent tab={activeTab} profile={profile} />
+        </div>
       </div>
 
       {isEditing && (
