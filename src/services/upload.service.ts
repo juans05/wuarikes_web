@@ -19,3 +19,13 @@ export async function uploadDocument(file: File) {
   );
   return data.url;
 }
+
+export async function uploadVideo(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+  const { data } = await apiClient.post<{ url: string; publicId: string }>(
+    "/upload/video",
+    formData,
+  );
+  return data.url;
+}

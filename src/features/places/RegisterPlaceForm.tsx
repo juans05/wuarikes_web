@@ -5,12 +5,12 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
-import { Camera, CheckCircle2, Lock, X } from "lucide-react";
+import { Camera, CheckCircle2, Film, Lock, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useCategories, useSubmitPlace } from "@/hooks/usePlaces";
 import { useDepartments, useDistricts, useProvinces } from "@/hooks/useUbigeo";
-import { useUploadImage } from "@/hooks/useUpload";
+import { useUploadImage, useUploadVideo } from "@/hooks/useUpload";
 import { useAuthStore } from "@/stores/auth.store";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { reverseGeocode } from "@/utils/reverseGeocode";
@@ -23,6 +23,7 @@ const LocationPicker = dynamic(
 
 const LIMA_CENTER = { latitude: -12.0464, longitude: -77.0428 };
 const MAX_PHOTOS = 6;
+const MAX_MENU_PHOTOS = 6;
 
 const schema = z.object({
   name: z.string().min(2, "Ingresa el nombre del lugar"),
@@ -33,11 +34,14 @@ const schema = z.object({
   district: z.string().min(1, "Selecciona un distrito"),
   address: z.string().optional(),
   phone: z.string().optional(),
+  openHoursText: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 type Photo = { file: File; preview: string };
+type PhotoTarget = "main" | "menu";
+type QueuedPhoto = { file: File; src: string; target: PhotoTarget };
 
 export function RegisterPlaceForm() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -67,10 +71,15 @@ function RegisterPlaceFormFields() {
   const [location, setLocation] = useState(LIMA_CENTER);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [photoError, setPhotoError] = useState<string | null>(null);
-  const [cropQueue, setCropQueue] = useState<{ file: File; src: string }[]>([]);
+  const [menuPhotos, setMenuPhotos] = useState<Photo[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [cropQueue, setCropQueue] = useState<QueuedPhoto[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [uploadingCount, setUploadingCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const menuFileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const geocodeRequestId = useRef(0);
 
   const {
@@ -89,6 +98,7 @@ function RegisterPlaceFormFields() {
   const { data: provinces } = useProvinces(department || null);
   const { data: districts } = useDistricts(department || null, province || null);
   const uploadMutation = useUploadImage();
+  const uploadVideoMutation = useUploadVideo();
   const submitMutation = useSubmitPlace();
   const isSubmitting = uploadingCount > 0 || submitMutation.isPending;
 
@@ -108,25 +118,37 @@ function RegisterPlaceFormFields() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount
   }, []);
 
-  function handlePhotosChange(files: FileList | null) {
+  function handlePhotosChange(files: FileList | null, target: PhotoTarget) {
     if (!files || files.length === 0) return;
-    const remaining = MAX_PHOTOS - photos.length;
+    const current = target === "main" ? photos.length : menuPhotos.length;
+    const max = target === "main" ? MAX_PHOTOS : MAX_MENU_PHOTOS;
+    const remaining = max - current;
     const picked = Array.from(files).slice(0, remaining);
     if (files.length > remaining) {
-      setPhotoError(`Máximo ${MAX_PHOTOS} fotos.`);
+      setPhotoError(`Máximo ${max} fotos.`);
     }
-    setCropQueue((q) => [...q, ...picked.map((file) => ({ file, src: URL.createObjectURL(file) }))]);
+    setCropQueue((q) => [
+      ...q,
+      ...picked.map((file) => ({ file, src: URL.createObjectURL(file), target })),
+    ]);
   }
 
   function handleCropCancel() {
     setCropQueue([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
+    if (menuFileInputRef.current) menuFileInputRef.current.value = "";
   }
 
   function handleCropConfirm(blob: Blob) {
+    const target = cropQueue[0]?.target ?? "main";
     const file = new File([blob], `foto-${Date.now()}.jpg`, { type: blob.type });
-    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(blob) }]);
-    setPhotoError(null);
+    const photo = { file, preview: URL.createObjectURL(blob) };
+    if (target === "main") {
+      setPhotos((prev) => [...prev, photo]);
+      setPhotoError(null);
+    } else {
+      setMenuPhotos((prev) => [...prev, photo]);
+    }
     setCropQueue((q) => q.slice(1));
   }
 
@@ -134,26 +156,50 @@ function RegisterPlaceFormFields() {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function removeMenuPhoto(index: number) {
+    setMenuPhotos((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function handleVideoChange(file: File | null) {
+    if (!file) return;
+    if (file.size > 20 * 1024 * 1024) {
+      setVideoError("El video no puede pesar más de 20MB.");
+      return;
+    }
+    setVideoError(null);
+    setVideo(file);
+  }
+
   async function onSubmit(values: FormValues) {
     if (photos.length === 0) {
       setPhotoError("Agrega al menos una foto del lugar");
       return;
     }
-    setUploadingCount(photos.length);
+    setUploadingCount(photos.length + menuPhotos.length + (video ? 1 : 0));
     try {
-      const urls: string[] = [];
+      const photoUrls: string[] = [];
       for (const photo of photos) {
-        urls.push(await uploadMutation.mutateAsync(photo.file));
+        photoUrls.push(await uploadMutation.mutateAsync(photo.file));
       }
-      submit(values, urls);
+      const menuImageUrls: string[] = [];
+      for (const photo of menuPhotos) {
+        menuImageUrls.push(await uploadMutation.mutateAsync(photo.file));
+      }
+      const videoUrl = video ? await uploadVideoMutation.mutateAsync(video) : undefined;
+      submit(values, photoUrls, menuImageUrls, videoUrl);
     } catch {
-      setPhotoError("No se pudieron subir las fotos. Intenta de nuevo.");
+      setPhotoError("No se pudieron subir los archivos. Intenta de nuevo.");
     } finally {
       setUploadingCount(0);
     }
   }
 
-  function submit(values: FormValues, photoUrls: string[]) {
+  function submit(
+    values: FormValues,
+    photoUrls: string[],
+    menuImageUrls: string[],
+    videoUrl: string | undefined,
+  ) {
     submitMutation.mutate(
       {
         name: values.name,
@@ -166,6 +212,9 @@ function RegisterPlaceFormFields() {
         longitude: location.longitude,
         coverImageUrl: photoUrls[0],
         photoUrls,
+        openHoursText: values.openHoursText || undefined,
+        menuImageUrls: menuImageUrls.length > 0 ? menuImageUrls : undefined,
+        videoUrl,
       },
       {
         onSuccess: () => setShowSuccessModal(true),
@@ -307,6 +356,15 @@ function RegisterPlaceFormFields() {
       </div>
 
       <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium">Horario (opcional)</label>
+        <input
+          {...register("openHoursText")}
+          placeholder="Ej: 12:00 PM - 10:00 PM"
+          className="rounded-xl border border-neutral-200 bg-white p-3 text-sm outline-none focus:border-primary dark:border-neutral-700 dark:bg-neutral-900"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
         <label className="text-sm font-medium">Descripción (opcional)</label>
         <textarea
           {...register("description")}
@@ -325,7 +383,7 @@ function RegisterPlaceFormFields() {
           multiple
           className="hidden"
           onChange={(e) => {
-            handlePhotosChange(e.target.files);
+            handlePhotosChange(e.target.files, "main");
             e.target.value = "";
           }}
         />
@@ -365,6 +423,89 @@ function RegisterPlaceFormFields() {
           )}
         </div>
         {photoError && <p className="text-xs text-red-500">{photoError}</p>}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium">Fotos de la carta (opcional, hasta {MAX_MENU_PHOTOS})</label>
+        <input
+          ref={menuFileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            handlePhotosChange(e.target.files, "menu");
+            e.target.value = "";
+          }}
+        />
+        <div className="flex flex-wrap gap-2">
+          {menuPhotos.map((photo, i) => (
+            <div key={photo.preview} className="relative h-24 w-24">
+              {/* eslint-disable-next-line @next/next/no-img-element -- preview de un Blob local */}
+              <img
+                src={photo.preview}
+                alt=""
+                className="h-full w-full rounded-xl object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => removeMenuPhoto(i)}
+                aria-label="Quitar foto"
+                className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900/80 text-white"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+          {menuPhotos.length < MAX_MENU_PHOTOS && (
+            <button
+              type="button"
+              onClick={() => menuFileInputRef.current?.click()}
+              className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-neutral-300 text-xs text-neutral-500 dark:border-neutral-700"
+            >
+              <Camera size={18} />
+              Agregar
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium">Video (opcional, máx. 20MB)</label>
+        <input
+          ref={videoInputRef}
+          type="file"
+          accept="video/mp4,video/quicktime"
+          className="hidden"
+          onChange={(e) => {
+            handleVideoChange(e.target.files?.[0] ?? null);
+            e.target.value = "";
+          }}
+        />
+        {video ? (
+          <div className="flex items-center gap-3 rounded-xl border border-neutral-200 p-3 text-sm dark:border-neutral-700">
+            <Film size={18} className="shrink-0 text-primary" />
+            <span className="min-w-0 flex-1 truncate">{video.name}</span>
+            <button
+              type="button"
+              onClick={() => setVideo(null)}
+              aria-label="Quitar video"
+              className="shrink-0 text-neutral-400 hover:text-neutral-700"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => videoInputRef.current?.click()}
+            className="flex h-16 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-300 text-sm text-neutral-500 dark:border-neutral-700"
+          >
+            <Film size={18} />
+            Subir un video del local
+          </button>
+        )}
+        {videoError && <p className="text-xs text-red-500">{videoError}</p>}
       </div>
 
       {submitMutation.isError && (

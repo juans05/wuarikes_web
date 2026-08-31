@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { uploadImage, uploadDocument } from "@/services/upload.service";
+import { uploadImage, uploadDocument, uploadVideo } from "@/services/upload.service";
 
 export function useUploadImage() {
   return useMutation({
@@ -10,5 +10,11 @@ export function useUploadImage() {
 export function useUploadDocument() {
   return useMutation({
     mutationFn: uploadDocument,
+  });
+}
+
+export function useUploadVideo() {
+  return useMutation({
+    mutationFn: uploadVideo,
   });
 }

@@ -6,13 +6,36 @@ import type { Dish } from "@/types/place";
 import { SuggestEditButton } from "./SuggestEditButton";
 
 export function MenuSection({ placeId }: { placeId: string }) {
-  const { data: categories, isLoading } = usePlaceMenu(placeId);
+  const { data, isLoading } = usePlaceMenu(placeId);
+  const categories = data?.categories ?? [];
+  const menuImageUrls = data?.menuImageUrls ?? [];
 
   if (isLoading) {
     return <p className="text-sm text-neutral-500">Cargando carta...</p>;
   }
 
-  if (!categories || categories.length === 0) {
+  if (categories.length === 0) {
+    if (menuImageUrls.length > 0) {
+      return (
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold">Carta</h2>
+            <SuggestEditButton placeId={placeId} field="menu" />
+          </div>
+          <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
+            {menuImageUrls.map((url) => (
+              <div
+                key={url}
+                className="relative aspect-[3/4] w-56 shrink-0 snap-start overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-800"
+              >
+                <Image src={url} alt="Página de la carta" fill sizes="224px" className="object-cover" />
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">Carta digital</h2>

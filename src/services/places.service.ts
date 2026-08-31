@@ -69,16 +69,20 @@ export async function getPlace(id: string) {
 }
 
 export async function getPlaceMenu(id: string) {
-  const { data } = await apiClient.get<{ categories: MenuCategory[] }>(
-    `/places/${id}/menu`,
-  );
-  return data.categories.map((category) => ({
-    ...category,
-    dishes: category.dishes.map((dish) => ({
-      ...dish,
-      price: Number(dish.price),
+  const { data } = await apiClient.get<{
+    place: { menuImageUrls: string[] | null };
+    categories: MenuCategory[];
+  }>(`/places/${id}/menu`);
+  return {
+    menuImageUrls: data.place.menuImageUrls ?? [],
+    categories: data.categories.map((category) => ({
+      ...category,
+      dishes: category.dishes.map((dish) => ({
+        ...dish,
+        price: Number(dish.price),
+      })),
     })),
-  }));
+  };
 }
 
 export interface RatingDistributionEntry {
@@ -150,6 +154,9 @@ export interface SubmitPlaceInput {
   phone?: string;
   coverImageUrl?: string;
   photoUrls?: string[];
+  openHoursText?: string;
+  menuImageUrls?: string[];
+  videoUrl?: string;
 }
 
 export async function submitPlace(input: SubmitPlaceInput) {
