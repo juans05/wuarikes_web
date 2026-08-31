@@ -22,6 +22,7 @@ const LocationPicker = dynamic(
 );
 
 const LIMA_CENTER = { latitude: -12.0464, longitude: -77.0428 };
+const MAX_PHOTOS = 6;
 
 const schema = z.object({
   name: z.string().min(2, "Ingresa el nombre del lugar"),
@@ -35,6 +36,8 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
+
+type Photo = { file: File; preview: string };
 
 export function RegisterPlaceForm() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -62,11 +65,11 @@ export function RegisterPlaceForm() {
 function RegisterPlaceFormFields() {
   const router = useRouter();
   const [location, setLocation] = useState(LIMA_CENTER);
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [photoError, setPhotoError] = useState<string | null>(null);
-  const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
+  const [cropQueue, setCropQueue] = useState<{ file: File; src: string }[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [uploadingCount, setUploadingCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const geocodeRequestId = useRef(0);
 
@@ -87,7 +90,7 @@ function RegisterPlaceFormFields() {
   const { data: districts } = useDistricts(department || null, province || null);
   const uploadMutation = useUploadImage();
   const submitMutation = useSubmitPlace();
-  const isSubmitting = uploadMutation.isPending || submitMutation.isPending;
+  const isSubmitting = uploadingCount > 0 || submitMutation.isPending;
 
   async function applyLocation(latitude: number, longitude: number) {
     setLocation({ latitude, longitude });
@@ -105,37 +108,52 @@ function RegisterPlaceFormFields() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount
   }, []);
 
-  function handlePhotoChange(file: File | null) {
-    if (!file) return;
-    setRawImageSrc(URL.createObjectURL(file));
+  function handlePhotosChange(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    const remaining = MAX_PHOTOS - photos.length;
+    const picked = Array.from(files).slice(0, remaining);
+    if (files.length > remaining) {
+      setPhotoError(`Máximo ${MAX_PHOTOS} fotos.`);
+    }
+    setCropQueue((q) => [...q, ...picked.map((file) => ({ file, src: URL.createObjectURL(file) }))]);
   }
 
   function handleCropCancel() {
-    setRawImageSrc(null);
+    setCropQueue([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   function handleCropConfirm(blob: Blob) {
-    setPhoto(new File([blob], "portada.jpg", { type: blob.type }));
-    setPhotoPreview(URL.createObjectURL(blob));
+    const file = new File([blob], `foto-${Date.now()}.jpg`, { type: blob.type });
+    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(blob) }]);
     setPhotoError(null);
-    setRawImageSrc(null);
+    setCropQueue((q) => q.slice(1));
   }
 
-  function removePhoto() {
-    setPhoto(null);
-    setPhotoPreview(null);
+  function removePhoto(index: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
-  function onSubmit(values: FormValues) {
-    if (!photo) {
-      setPhotoError("Agrega una foto del lugar");
+  async function onSubmit(values: FormValues) {
+    if (photos.length === 0) {
+      setPhotoError("Agrega al menos una foto del lugar");
       return;
     }
-    uploadMutation.mutate(photo, { onSuccess: (url) => submit(values, url) });
+    setUploadingCount(photos.length);
+    try {
+      const urls: string[] = [];
+      for (const photo of photos) {
+        urls.push(await uploadMutation.mutateAsync(photo.file));
+      }
+      submit(values, urls);
+    } catch {
+      setPhotoError("No se pudieron subir las fotos. Intenta de nuevo.");
+    } finally {
+      setUploadingCount(0);
+    }
   }
 
-  function submit(values: FormValues, coverImageUrl: string) {
+  function submit(values: FormValues, photoUrls: string[]) {
     submitMutation.mutate(
       {
         name: values.name,
@@ -146,7 +164,8 @@ function RegisterPlaceFormFields() {
         phone: values.phone || undefined,
         latitude: location.latitude,
         longitude: location.longitude,
-        coverImageUrl,
+        coverImageUrl: photoUrls[0],
+        photoUrls,
       },
       {
         onSuccess: () => setShowSuccessModal(true),
@@ -298,41 +317,53 @@ function RegisterPlaceFormFields() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium">Foto</label>
+        <label className="text-sm font-medium">Fotos (hasta {MAX_PHOTOS})</label>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/png,image/jpeg,image/webp"
+          multiple
           className="hidden"
-          onChange={(e) => handlePhotoChange(e.target.files?.[0] ?? null)}
+          onChange={(e) => {
+            handlePhotosChange(e.target.files);
+            e.target.value = "";
+          }}
         />
-        {photoPreview ? (
-          <div className="relative h-32 w-32">
-            {/* eslint-disable-next-line @next/next/no-img-element -- preview de un Blob local */}
-            <img
-              src={photoPreview}
-              alt=""
-              className="h-full w-full rounded-xl object-cover"
-            />
+        <div className="flex flex-wrap gap-2">
+          {photos.map((photo, i) => (
+            <div key={photo.preview} className="relative h-24 w-24">
+              {/* eslint-disable-next-line @next/next/no-img-element -- preview de un Blob local */}
+              <img
+                src={photo.preview}
+                alt=""
+                className="h-full w-full rounded-xl object-cover"
+              />
+              {i === 0 && (
+                <span className="absolute bottom-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  Portada
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => removePhoto(i)}
+                aria-label="Quitar foto"
+                className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900/80 text-white"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+          {photos.length < MAX_PHOTOS && (
             <button
               type="button"
-              onClick={removePhoto}
-              aria-label="Quitar foto"
-              className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900/80 text-white"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-neutral-300 text-xs text-neutral-500 dark:border-neutral-700"
             >
-              <X size={14} />
+              <Camera size={18} />
+              Agregar
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="flex h-24 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-300 text-sm text-neutral-500 dark:border-neutral-700"
-          >
-            <Camera size={18} />
-            Subir foto del local o platos
-          </button>
-        )}
+          )}
+        </div>
         {photoError && <p className="text-xs text-red-500">{photoError}</p>}
       </div>
 
@@ -348,9 +379,9 @@ function RegisterPlaceFormFields() {
         {isSubmitting ? "Guardando..." : "Guardar Huarique"}
       </button>
 
-      {rawImageSrc && (
+      {cropQueue.length > 0 && (
         <ImageCropModal
-          imageSrc={rawImageSrc}
+          imageSrc={cropQueue[0].src}
           onCancel={handleCropCancel}
           onConfirm={handleCropConfirm}
         />

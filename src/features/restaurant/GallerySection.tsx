@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { Play } from "lucide-react";
 import { useCheckinsFeed } from "@/hooks/useCheckins";
 import { usePlaceVideos } from "@/hooks/usePlaceVideos";
+import { usePlacePhotos } from "@/hooks/usePlacePhotos";
 
 type Tab = "photos" | "videos";
 
@@ -13,13 +14,17 @@ export function GallerySection({ placeId }: { placeId: string }) {
   const [tab, setTab] = useState<Tab>("photos");
   const { data: checkins } = useCheckinsFeed({ placeId, size: 50, hasPhotos: true });
   const { data: videos } = usePlaceVideos(placeId);
+  const { data: placePhotos } = usePlacePhotos(placeId);
 
   const photos = useMemo(() => {
-    const urls = (checkins?.data ?? []).flatMap((c) =>
+    // Las del registro del local van primero — son curadas, no dependen de que
+    // alguien haya hecho check-in todavía.
+    const curated = (placePhotos?.data ?? []).map((p) => p.url);
+    const fromCheckins = (checkins?.data ?? []).flatMap((c) =>
       [c.photoUrl, ...c.photos].filter((url): url is string => Boolean(url)),
     );
-    return Array.from(new Set(urls));
-  }, [checkins]);
+    return Array.from(new Set([...curated, ...fromCheckins]));
+  }, [placePhotos, checkins]);
 
   const videoList = videos?.data ?? [];
 

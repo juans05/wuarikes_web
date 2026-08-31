@@ -149,6 +149,7 @@ export interface SubmitPlaceInput {
   longitude: number;
   phone?: string;
   coverImageUrl?: string;
+  photoUrls?: string[];
 }
 
 export async function submitPlace(input: SubmitPlaceInput) {
