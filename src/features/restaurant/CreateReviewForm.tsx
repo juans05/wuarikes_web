@@ -3,12 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Camera, Star, X } from "lucide-react";
+import { Camera, LocateFixed, Star, X } from "lucide-react";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useCreateCheckin } from "@/hooks/useCheckins";
 import { useUploadImage } from "@/hooks/useUpload";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { getCurrentPosition, locationErrorMessage } from "@/utils/geolocation";
 
 const schema = z.object({
   rating: z.number().min(1, "Selecciona una calificación").max(5),
@@ -42,39 +43,51 @@ export function CreateReviewForm({
   const { mutate, isPending, isError, error } = useCreateCheckin(placeId);
   const uploadMutation = useUploadImage();
   const rating = watch("rating");
-  const isSubmitting = isPending || uploadMutation.isPending;
-  const coordsRef = useRef<{ latitude: number; longitude: number } | null>(null);
-
-  useEffect(() => {
-    navigator.geolocation?.getCurrentPosition((pos) => {
-      coordsRef.current = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-    });
-  }, []);
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const isSubmitting = isPending || uploadMutation.isPending || isLocating;
 
   function handlePhotoChange(file: File | null) {
     setPhoto(file);
     setPhotoPreview(file ? URL.createObjectURL(file) : null);
   }
 
-  function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormValues) {
+    setLocationError(null);
+    setIsLocating(true);
+    let position: GeolocationPosition;
+    try {
+      position = await getCurrentPosition();
+    } catch (err) {
+      setLocationError(locationErrorMessage(err));
+      setIsLocating(false);
+      return;
+    }
+    setIsLocating(false);
+
+    const coords = { latitude: position.coords.latitude, longitude: position.coords.longitude };
     if (!photo) {
-      submitCheckin(values, undefined);
+      submitCheckin(values, undefined, coords);
       return;
     }
     uploadMutation.mutate(photo, {
-      onSuccess: (url) => submitCheckin(values, url),
+      onSuccess: (url) => submitCheckin(values, url, coords),
     });
   }
 
-  function submitCheckin(values: FormValues, photoUrl: string | undefined) {
+  function submitCheckin(
+    values: FormValues,
+    photoUrl: string | undefined,
+    coords: { latitude: number; longitude: number },
+  ) {
     mutate(
       {
         placeId,
         rating: values.rating,
         comment: values.comment,
         photoUrl,
-        latitude: coordsRef.current?.latitude,
-        longitude: coordsRef.current?.longitude,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
       },
       {
         onSuccess: () => {
@@ -158,6 +171,7 @@ export function CreateReviewForm({
         </button>
       )}
 
+      {locationError && <p className="text-xs text-red-500">{locationError}</p>}
       {isError && (
         <p className="text-xs text-red-500">
           {(error as { response?: { status?: number } })?.response?.status === 401
@@ -169,9 +183,10 @@ export function CreateReviewForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="self-start rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-600 disabled:opacity-50"
+        className="self-start flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-600 disabled:opacity-50"
       >
-        {isSubmitting ? "Publicando..." : "Publicar reseña"}
+        {isLocating && <LocateFixed size={14} className="animate-pulse" />}
+        {isLocating ? "Ubicándote..." : isSubmitting ? "Publicando..." : "Publicar reseña"}
       </button>
     </form>
   );

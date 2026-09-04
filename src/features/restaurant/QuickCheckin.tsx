@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, MapPin } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, MapPin, LocateFixed } from "lucide-react";
 import { useCreateCheckin, useAddDish } from "@/hooks/useCheckins";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { getCurrentPosition, locationErrorMessage } from "@/utils/geolocation";
 
 export function QuickCheckin({
   placeId,
@@ -14,22 +15,29 @@ export function QuickCheckin({
 }) {
   const { mutate, isPending, isError, error, isSuccess, data } = useCreateCheckin(placeId);
   const addDish = useAddDish(placeId);
-  const coordsRef = useRef<{ latitude: number; longitude: number } | null>(null);
   const [dishName, setDishName] = useState("");
   const [dishPrice, setDishPrice] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
-  useEffect(() => {
-    navigator.geolocation?.getCurrentPosition((pos) => {
-      coordsRef.current = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-    });
-  }, []);
+  async function handleCheckin() {
+    setLocationError(null);
+    setIsLocating(true);
+    let position: GeolocationPosition;
+    try {
+      position = await getCurrentPosition();
+    } catch (err) {
+      setLocationError(locationErrorMessage(err));
+      setIsLocating(false);
+      return;
+    }
+    setIsLocating(false);
 
-  function handleCheckin() {
     mutate(
       {
         placeId,
-        latitude: coordsRef.current?.latitude,
-        longitude: coordsRef.current?.longitude,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
       },
       { onSuccess: () => onCheckedIn?.() },
     );
@@ -107,12 +115,13 @@ export function QuickCheckin({
       <button
         type="button"
         onClick={handleCheckin}
-        disabled={isPending}
+        disabled={isPending || isLocating}
         className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-primary px-6 py-4 text-base font-bold text-white shadow-lg shadow-primary-500/30 transition hover:scale-[1.01] hover:bg-primary-600 active:scale-100 disabled:opacity-50 sm:w-fit sm:px-8"
       >
-        <MapPin size={22} />
-        {isPending ? "Registrando..." : "Hacer Check-in aquí"}
+        {isLocating ? <LocateFixed size={22} className="animate-pulse" /> : <MapPin size={22} />}
+        {isLocating ? "Ubicándote..." : isPending ? "Registrando..." : "Hacer Check-in aquí"}
       </button>
+      {locationError && <p className="text-xs text-red-500">{locationError}</p>}
       {isError && (
         <p className="text-xs text-red-500">
           {getErrorMessage(error, "No se pudo registrar el check-in. Intenta de nuevo.")}
