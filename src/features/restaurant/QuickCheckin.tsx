@@ -56,7 +56,7 @@ export function QuickCheckin({
   if (isSuccess) {
     if (addDish.isSuccess || dishSkipped) {
       return (
-        <p className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-50 px-6 py-4 text-base font-bold text-primary-600 dark:bg-primary-900/30 dark:text-primary-200">
+        <p className="flex w-full basis-full items-center justify-center gap-2 rounded-2xl bg-primary-50 px-6 py-4 text-base font-bold text-primary-600 dark:bg-primary-900/30 dark:text-primary-200">
           <CheckCircle2 size={22} />
           {addDish.isSuccess ? "¡Gracias! Ya sabemos qué pediste." : "¡Check-in registrado!"}
         </p>
@@ -64,7 +64,7 @@ export function QuickCheckin({
     }
 
     return (
-      <div className="flex flex-col gap-3 rounded-2xl bg-primary-50 p-4 dark:bg-primary-900/30">
+      <div className="flex w-full basis-full flex-col gap-3 rounded-2xl bg-primary-50 p-4 dark:bg-primary-900/30">
         <p className="flex items-center gap-2 text-base font-bold text-primary-600 dark:text-primary-200">
           <CheckCircle2 size={22} />
           ¡Check-in registrado!
@@ -111,16 +111,27 @@ export function QuickCheckin({
     );
   }
 
+  const busy = isPending || isLocating;
+
   return (
     <div className="flex flex-col gap-1.5">
       <button
         type="button"
         onClick={handleCheckin}
-        disabled={isPending || isLocating}
-        className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-primary px-6 py-4 text-base font-bold text-white shadow-lg shadow-primary-500/30 transition hover:scale-[1.01] hover:bg-primary-600 active:scale-100 disabled:opacity-50 sm:w-fit sm:px-8"
+        disabled={busy}
+        className="inline-flex w-fit items-center gap-2 rounded-full bg-primary py-2 pr-4 pl-2.5 text-sm font-bold text-white shadow-md shadow-primary-500/40 transition hover:scale-[1.03] hover:bg-primary-600 active:scale-100 disabled:opacity-60"
       >
-        {isLocating ? <LocateFixed size={22} className="animate-pulse" /> : <MapPin size={22} />}
-        {isLocating ? "Ubicándote..." : isPending ? "Registrando..." : "Hacer Check-in aquí"}
+        <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
+          {!busy && (
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/60" />
+          )}
+          {isLocating ? (
+            <LocateFixed size={16} className="relative animate-pulse" />
+          ) : (
+            <MapPin size={16} className="relative" />
+          )}
+        </span>
+        {isLocating ? "Ubicándote..." : isPending ? "Registrando..." : "Check-in aquí"}
       </button>
       {locationError && <p className="text-xs text-red-500">{locationError}</p>}
       {isError && (
