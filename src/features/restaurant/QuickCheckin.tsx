@@ -19,6 +19,7 @@ export function QuickCheckin({
   const [dishPrice, setDishPrice] = useState("");
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [dishSkipped, setDishSkipped] = useState(false);
 
   async function handleCheckin() {
     setLocationError(null);
@@ -53,11 +54,11 @@ export function QuickCheckin({
   }
 
   if (isSuccess) {
-    if (addDish.isSuccess) {
+    if (addDish.isSuccess || dishSkipped) {
       return (
         <p className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-50 px-6 py-4 text-base font-bold text-primary-600 dark:bg-primary-900/30 dark:text-primary-200">
           <CheckCircle2 size={22} />
-          ¡Gracias! Ya sabemos qué pediste.
+          {addDish.isSuccess ? "¡Gracias! Ya sabemos qué pediste." : "¡Check-in registrado!"}
         </p>
       );
     }
@@ -100,7 +101,7 @@ export function QuickCheckin({
           </button>
           <button
             type="button"
-            onClick={() => onCheckedIn?.()}
+            onClick={() => setDishSkipped(true)}
             className="text-sm font-medium text-neutral-500 hover:underline"
           >
             Omitir
