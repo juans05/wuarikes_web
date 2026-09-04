@@ -61,6 +61,39 @@ export async function getMyFollowing(page = 1, limit = 20) {
   return data;
 }
 
+export interface PublicProfile {
+  id: string;
+  fullName: string;
+  avatarUrl: string | null;
+  currentLevel: number;
+  followers: number;
+  following: number;
+}
+
+export async function getPublicProfile(userId: string) {
+  const { data } = await apiClient.get<PublicProfile>(`/users/${userId}`);
+  return data;
+}
+
+export interface FollowStatus {
+  isFollowing: boolean;
+  followers: number;
+  following: number;
+}
+
+export async function getFollowStatus(userId: string) {
+  const { data } = await apiClient.get<FollowStatus>(`/users/${userId}/follow`);
+  return data;
+}
+
+export async function followUser(userId: string) {
+  await apiClient.post(`/users/${userId}/follow`);
+}
+
+export async function unfollowUser(userId: string) {
+  await apiClient.delete(`/users/${userId}/follow`);
+}
+
 export async function getMyCheckins(page = 1, limit = 20) {
   const { data } = await apiClient.get<PaginatedResponse<MyCheckin>>("/users/me/checkins", {
     params: { page, limit },

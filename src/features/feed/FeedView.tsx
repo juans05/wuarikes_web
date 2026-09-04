@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -7,18 +8,44 @@ import { Heart, MapPin } from "lucide-react";
 import { RatingStars } from "@/components/common/RatingStars";
 import { CheckinCardSkeleton } from "@/components/common/Skeleton";
 import { useAuthStore } from "@/stores/auth.store";
-import { useCheckinsFeed, useLikeCheckin } from "@/hooks/useCheckins";
+import { useCheckinsFeed, useFriendsFeed, useLikeCheckin } from "@/hooks/useCheckins";
 import { formatRelativeDate } from "@/utils/formatDate";
 
 export function FeedView() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { data, isLoading } = useCheckinsFeed({ size: 30 });
+  const [tab, setTab] = useState<"todos" | "siguiendo">("todos");
+
+  const globalFeed = useCheckinsFeed({ size: 30 });
+  const friendsFeed = useFriendsFeed(isAuthenticated && tab === "siguiendo");
+
+  const { data, isLoading } = tab === "siguiendo" ? friendsFeed : globalFeed;
   const likeMutation = useLikeCheckin();
   const checkins = data?.data ?? [];
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4 p-4">
-      <h1 className="font-heading text-xl font-bold">Actividad reciente</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-heading text-xl font-bold">Actividad reciente</h1>
+        {isAuthenticated && (
+          <div className="flex rounded-full bg-neutral-100 p-1 dark:bg-neutral-800">
+            {(["todos", "siguiendo"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={clsx(
+                  "rounded-full px-3 py-1.5 text-xs font-bold capitalize transition",
+                  tab === t
+                    ? "bg-white text-primary shadow-sm dark:bg-neutral-900"
+                    : "text-neutral-500",
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {isLoading && (
         <div className="flex flex-col gap-4">
@@ -29,7 +56,9 @@ export function FeedView() {
       )}
       {!isLoading && checkins.length === 0 && (
         <p className="py-8 text-center text-sm text-neutral-500">
-          Todavía no hay check-ins. ¡Sé el primero!
+          {tab === "siguiendo"
+            ? "Todavía no sigues a nadie, o la gente que sigues no ha hecho check-in."
+            : "Todavía no hay check-ins. ¡Sé el primero!"}
         </p>
       )}
 
@@ -40,7 +69,10 @@ export function FeedView() {
             className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-900"
           >
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+              <Link
+                href={`/usuario/${checkin.user.id}`}
+                className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
+              >
                 {checkin.user.avatarUrl && (
                   <Image
                     src={checkin.user.avatarUrl}
@@ -50,9 +82,11 @@ export function FeedView() {
                     className="h-full w-full object-cover"
                   />
                 )}
-              </div>
+              </Link>
               <div className="flex-1">
-                <p className="text-sm font-semibold">{checkin.user.fullName}</p>
+                <Link href={`/usuario/${checkin.user.id}`} className="text-sm font-semibold hover:underline">
+                  {checkin.user.fullName}
+                </Link>
                 {checkin.place && (
                   <Link
                     href={`/restaurantes/${checkin.place.id}`}

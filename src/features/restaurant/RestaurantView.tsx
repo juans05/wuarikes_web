@@ -6,6 +6,8 @@ import { usePlace } from "@/hooks/usePlaces";
 import { RestaurantHero } from "./RestaurantHero";
 import { RestaurantSidebar } from "./RestaurantSidebar";
 import { ActionBar } from "./ActionBar";
+import { TrustBadge } from "./TrustBadge";
+import { FriendsVisited } from "./FriendsVisited";
 import { MenuSection } from "./MenuSection";
 import { TopDishes } from "./TopDishes";
 import { ReviewsSection } from "./ReviewsSection";
@@ -50,6 +52,11 @@ export function RestaurantView({ id }: { id: string }) {
 
       <div className="grid gap-10 px-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 xl:px-12">
         <div className="flex min-w-0 flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            <TrustBadge placeId={place.id} />
+            <FriendsVisited placeId={place.id} />
+          </div>
+
           <ActionBar
             placeId={place.id}
             placeName={place.name}

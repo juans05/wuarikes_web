@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import clsx from "clsx";
 import { Heart } from "lucide-react";
 import { RatingStars } from "@/components/common/RatingStars";
@@ -121,7 +122,10 @@ export function ReviewsSection({
             className="flex flex-col gap-3 rounded-2xl border border-neutral-100 p-4 dark:border-neutral-800"
           >
             <div className="flex items-start gap-3">
-              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-primary-100 dark:bg-primary-900">
+              <Link
+                href={`/usuario/${checkin.user.id}`}
+                className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-primary-100 dark:bg-primary-900"
+              >
                 {checkin.user.avatarUrl ? (
                   <Image
                     src={checkin.user.avatarUrl}
@@ -135,10 +139,12 @@ export function ReviewsSection({
                     {checkin.user.fullName?.[0]?.toUpperCase()}
                   </span>
                 )}
-              </div>
+              </Link>
               <div className="flex flex-1 flex-col gap-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold">{checkin.user.fullName}</span>
+                  <Link href={`/usuario/${checkin.user.id}`} className="text-sm font-semibold hover:underline">
+                    {checkin.user.fullName}
+                  </Link>
                   <span className="text-xs text-neutral-400">
                     {formatRelativeDate(checkin.createdAt)}
                   </span>

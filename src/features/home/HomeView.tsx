@@ -2,16 +2,20 @@
 
 import { Logo } from "@/components/common/Logo";
 import { PlaceCardSkeleton } from "@/components/common/Skeleton";
-import { useCategories, usePlaces } from "@/hooks/usePlaces";
+import { useCategories, useMostFavorited, usePlaces, useTrending } from "@/hooks/usePlaces";
 import type { Place } from "@/types/place";
 import { CategoryRow } from "./CategoryRow";
 import { CategoryTiles } from "./CategoryTiles";
 import { HeroSection } from "./HeroSection";
 import { HostCTASection } from "./HostCTASection";
+import { PlaceRow } from "./PlaceRow";
+import { WhereToEatWizard } from "./WhereToEatWizard";
 
 export function HomeView() {
   const { data: categories } = useCategories();
   const { data, isLoading, isError } = usePlaces({ limit: 100 });
+  const { data: trending } = useTrending();
+  const { data: mostFavorited } = useMostFavorited();
 
   const places = data?.data ?? [];
   const placesByCategory = new Map<string, Place[]>();
@@ -33,6 +37,13 @@ export function HomeView() {
       </div>
 
       <HeroSection />
+
+      <section className="mx-auto w-full max-w-[1600px] px-4">
+        <WhereToEatWizard />
+      </section>
+
+      <PlaceRow title="Tendencias esta semana" places={trending ?? []} />
+      <PlaceRow title="Lo más guardado" places={mostFavorited ?? []} />
 
       {categoriesWithPlaces.length > 0 && (
         <section className="mx-auto w-full max-w-[1600px] px-4">

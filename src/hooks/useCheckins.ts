@@ -3,6 +3,7 @@ import {
   addDish,
   createCheckin,
   getCheckinsFeed,
+  getFriendsFeed,
   likeCheckin,
   unlikeCheckin,
   type CheckinsFeedQuery,
@@ -12,6 +13,14 @@ export function useCheckinsFeed(query: CheckinsFeedQuery) {
   return useQuery({
     queryKey: ["checkins", "feed", query],
     queryFn: () => getCheckinsFeed(query),
+  });
+}
+
+export function useFriendsFeed(enabled: boolean) {
+  return useQuery({
+    queryKey: ["checkins", "feed", "following"],
+    queryFn: () => getFriendsFeed({ size: 30 }),
+    enabled,
   });
 }
 

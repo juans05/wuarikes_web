@@ -176,3 +176,42 @@ export async function claimPlace(placeId: string, input: ClaimPlaceInput) {
   const { data } = await apiClient.post<{ id: string }>(`/places/${placeId}/claim`, input);
   return data;
 }
+
+export async function getTrending(district?: string, category?: string, limit = 10) {
+  const { data } = await apiClient.get<Place[]>("/places/discovery/different", {
+    params: { district, category, limit },
+  });
+  return data.map(normalizePlace);
+}
+
+export async function getMostFavorited(limit = 10) {
+  const { data } = await apiClient.get<Place[]>("/places/discovery/most-favorited", {
+    params: { limit },
+  });
+  return data.map(normalizePlace);
+}
+
+export async function getRecommendations(query: PlacesQuery) {
+  const { data } = await apiClient.get<Place[]>("/places/recommendations", { params: query });
+  return data.map(normalizePlace);
+}
+
+export interface TrustStage {
+  stage: "comunidad" | "verificado" | "reclamado" | "negocio_wuarike";
+  label: string;
+}
+
+export async function getTrustStage(placeId: string) {
+  const { data } = await apiClient.get<TrustStage>(`/places/${placeId}/trust-stage`);
+  return data;
+}
+
+export interface FriendsVisited {
+  count: number;
+  friends: { id: string; fullName: string; avatarUrl: string | null }[];
+}
+
+export async function getFriendsVisited(placeId: string) {
+  const { data } = await apiClient.get<FriendsVisited>(`/places/${placeId}/friends-visited`);
+  return data;
+}

@@ -3,15 +3,60 @@ import {
   claimPlace,
   getAmenities,
   getCategories,
+  getFriendsVisited,
+  getMostFavorited,
   getPlace,
   getPlaceMenu,
   getPlaces,
   getPromotions,
   getRatingDistribution,
+  getRecommendations,
+  getTrending,
+  getTrustStage,
   searchTikTok,
   submitPlace,
 } from "@/services/places.service";
+import { useAuthStore } from "@/stores/auth.store";
 import type { PlacesQuery } from "@/types/place";
+
+export function useTrending(district?: string, category?: string) {
+  return useQuery({
+    queryKey: ["places", "trending", district, category],
+    queryFn: () => getTrending(district, category),
+  });
+}
+
+export function useMostFavorited() {
+  return useQuery({
+    queryKey: ["places", "most-favorited"],
+    queryFn: () => getMostFavorited(),
+  });
+}
+
+export function useRecommendations(query: PlacesQuery, enabled: boolean) {
+  return useQuery({
+    queryKey: ["places", "recommendations", query],
+    queryFn: () => getRecommendations(query),
+    enabled,
+  });
+}
+
+export function useTrustStage(placeId: string) {
+  return useQuery({
+    queryKey: ["place", placeId, "trust-stage"],
+    queryFn: () => getTrustStage(placeId),
+    enabled: Boolean(placeId),
+  });
+}
+
+export function useFriendsVisited(placeId: string) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ["place", placeId, "friends-visited"],
+    queryFn: () => getFriendsVisited(placeId),
+    enabled: Boolean(placeId) && isAuthenticated,
+  });
+}
 
 export function usePlaces(query: PlacesQuery) {
   return useQuery({

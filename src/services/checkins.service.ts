@@ -22,6 +22,13 @@ export async function getCheckinsFeed(query: CheckinsFeedQuery) {
   return data;
 }
 
+export async function getFriendsFeed(query: { page?: number; size?: number }) {
+  const { data } = await apiClient.get<CheckinsFeedResponse>("/checkins/feed/following", {
+    params: query,
+  });
+  return data;
+}
+
 export interface CreateCheckinInput {
   placeId: string;
   rating?: number;
