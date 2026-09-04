@@ -7,6 +7,7 @@ import { RestaurantHero } from "./RestaurantHero";
 import { RestaurantSidebar } from "./RestaurantSidebar";
 import { ActionBar } from "./ActionBar";
 import { MenuSection } from "./MenuSection";
+import { TopDishes } from "./TopDishes";
 import { ReviewsSection } from "./ReviewsSection";
 import { PromotionsSection } from "./PromotionsSection";
 import { ExtendedProfileSection } from "./ExtendedProfileSection";
@@ -64,6 +65,8 @@ export function RestaurantView({ id }: { id: string }) {
           <PromotionsSection place={place} />
 
           <MenuSection placeId={place.id} />
+
+          <TopDishes placeId={place.id} />
 
           <GallerySection placeId={place.id} />
 

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addDish,
   createCheckin,
   getCheckinsFeed,
   likeCheckin,
@@ -21,6 +22,17 @@ export function useCreateCheckin(placeId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checkins", "feed"] });
       queryClient.invalidateQueries({ queryKey: ["place", placeId] });
+    },
+  });
+}
+
+export function useAddDish(placeId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ checkinId, dishName, dishPrice }: { checkinId: string; dishName: string; dishPrice?: number }) =>
+      addDish(checkinId, dishName, dishPrice),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["top-dishes", placeId] });
     },
   });
 }

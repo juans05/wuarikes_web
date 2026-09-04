@@ -29,6 +29,18 @@ export interface CreateCheckinInput {
   photoUrl?: string;
   latitude?: number;
   longitude?: number;
+  dishName?: string;
+  dishPrice?: number;
+}
+
+export interface TopDish {
+  dishName: string;
+  orders: number;
+}
+
+export async function getTopDishes(placeId: string) {
+  const { data } = await apiClient.get<TopDish[]>(`/checkins/places/${placeId}/top-dishes`);
+  return data;
 }
 
 export async function createCheckin(input: CreateCheckinInput) {
@@ -42,4 +54,12 @@ export async function likeCheckin(id: string) {
 
 export async function unlikeCheckin(id: string) {
   await apiClient.delete(`/checkins/${id}/like`);
+}
+
+export async function addDish(checkinId: string, dishName: string, dishPrice?: number) {
+  const { data } = await apiClient.patch<Checkin>(`/checkins/${checkinId}/dish`, {
+    dishName,
+    dishPrice,
+  });
+  return data;
 }

@@ -4,6 +4,7 @@ import { Camera, PenLine } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthModalStore } from "@/stores/authModal.store";
 import { FavoriteButton } from "./FavoriteButton";
+import { WantToGoButton } from "./WantToGoButton";
 import { ShareButtons } from "./ShareButtons";
 import { QuickCheckin } from "./QuickCheckin";
 
@@ -58,6 +59,7 @@ export function ActionBar({
 
         <div className="ml-auto flex items-center gap-2">
           <FavoriteButton placeId={placeId} />
+          <WantToGoButton placeId={placeId} />
           <ShareButtons title={placeName} />
         </div>
       </div>

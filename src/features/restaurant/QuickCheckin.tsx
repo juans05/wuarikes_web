@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, MapPin } from "lucide-react";
-import { useCreateCheckin } from "@/hooks/useCheckins";
+import { useCreateCheckin, useAddDish } from "@/hooks/useCheckins";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export function QuickCheckin({
@@ -12,8 +12,11 @@ export function QuickCheckin({
   placeId: string;
   onCheckedIn?: () => void;
 }) {
-  const { mutate, isPending, isError, error, isSuccess } = useCreateCheckin(placeId);
+  const { mutate, isPending, isError, error, isSuccess, data } = useCreateCheckin(placeId);
+  const addDish = useAddDish(placeId);
   const coordsRef = useRef<{ latitude: number; longitude: number } | null>(null);
+  const [dishName, setDishName] = useState("");
+  const [dishPrice, setDishPrice] = useState("");
 
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition((pos) => {
@@ -32,12 +35,70 @@ export function QuickCheckin({
     );
   }
 
+  function handleSaveDish() {
+    if (!data?.id || !dishName.trim()) return;
+    addDish.mutate({
+      checkinId: data.id,
+      dishName: dishName.trim(),
+      dishPrice: dishPrice ? Number(dishPrice) : undefined,
+    });
+  }
+
   if (isSuccess) {
+    if (addDish.isSuccess) {
+      return (
+        <p className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-50 px-6 py-4 text-base font-bold text-primary-600 dark:bg-primary-900/30 dark:text-primary-200">
+          <CheckCircle2 size={22} />
+          ¡Gracias! Ya sabemos qué pediste.
+        </p>
+      );
+    }
+
     return (
-      <p className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-50 px-6 py-4 text-base font-bold text-primary-600 dark:bg-primary-900/30 dark:text-primary-200">
-        <CheckCircle2 size={22} />
-        ¡Check-in registrado!
-      </p>
+      <div className="flex flex-col gap-3 rounded-2xl bg-primary-50 p-4 dark:bg-primary-900/30">
+        <p className="flex items-center gap-2 text-base font-bold text-primary-600 dark:text-primary-200">
+          <CheckCircle2 size={22} />
+          ¡Check-in registrado!
+        </p>
+        <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
+          ¿Qué pediste? (opcional)
+        </p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={dishName}
+            onChange={(e) => setDishName(e.target.value)}
+            placeholder="Ej. Lomo saltado"
+            maxLength={100}
+            className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          />
+          <input
+            type="number"
+            min={0}
+            value={dishPrice}
+            onChange={(e) => setDishPrice(e.target.value)}
+            placeholder="S/ precio"
+            className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm sm:w-28 dark:border-neutral-700 dark:bg-neutral-900"
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleSaveDish}
+            disabled={!dishName.trim() || addDish.isPending}
+            className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+          >
+            {addDish.isPending ? "Guardando..." : "Guardar"}
+          </button>
+          <button
+            type="button"
+            onClick={() => onCheckedIn?.()}
+            className="text-sm font-medium text-neutral-500 hover:underline"
+          >
+            Omitir
+          </button>
+        </div>
+      </div>
     );
   }
 
