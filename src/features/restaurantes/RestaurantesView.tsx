@@ -8,6 +8,7 @@ import { PlaceCard } from "@/components/ui/PlaceCard";
 import { usePlaces } from "@/hooks/usePlaces";
 import { SearchBar } from "@/features/home/SearchBar";
 import { EMPTY_FILTERS, FiltersSidebar, type AdvancedFilters } from "./FiltersSidebar";
+import { WuarikesHereForm } from "./WuarikesHereForm";
 
 const MapView = dynamic(() => import("@/features/home/MapView").then((m) => m.MapView), {
   ssr: false,
@@ -113,9 +114,12 @@ export function RestaurantesView({
             </p>
           )}
           {!isLoading && !isError && places.length === 0 && (
-            <p className="py-8 text-center text-sm text-neutral-500">
-              No encontramos restaurantes con esos filtros.
-            </p>
+            <div className="flex flex-col items-center gap-4 py-8">
+              <p className="text-center text-sm text-neutral-500">
+                No encontramos restaurantes con esos filtros.
+              </p>
+              <WuarikesHereForm />
+            </div>
           )}
 
           {!isLoading && !isError && places.length > 0 && view === "map" && (

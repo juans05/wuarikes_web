@@ -215,3 +215,15 @@ export async function getFriendsVisited(placeId: string) {
   const { data } = await apiClient.get<FriendsVisited>(`/places/${placeId}/friends-visited`);
   return data;
 }
+
+export interface SubmitWuarikesHereInput {
+  restaurantName: string;
+  address?: string;
+  district?: string;
+  notes?: string;
+}
+
+export async function submitWuarikesHere(input: SubmitWuarikesHereInput) {
+  const { data } = await apiClient.post<{ message: string }>("/places/wuarikes-here", input);
+  return data;
+}
