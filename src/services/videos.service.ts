@@ -9,3 +9,10 @@ export async function getPlaceVideos(placeId: string, page = 1, limit = 12) {
   );
   return data;
 }
+
+export async function uploadPlaceVideo(placeId: string, file: File) {
+  const formData = new FormData();
+  formData.append("video", file);
+  const { data } = await apiClient.post<PlaceVideo>(`/places/${placeId}/videos`, formData);
+  return data;
+}

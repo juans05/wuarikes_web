@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Skeleton } from "@/components/common/Skeleton";
 import { usePlace } from "@/hooks/usePlaces";
+import { useAuthStore } from "@/stores/auth.store";
 import { RestaurantHero } from "./RestaurantHero";
 import { RestaurantSidebar } from "./RestaurantSidebar";
 import { ActionBar } from "./ActionBar";
@@ -21,6 +22,7 @@ import { InfoCheckPrompt } from "./InfoCheckPrompt";
 export function RestaurantView({ id }: { id: string }) {
   const { data: place, isLoading, isError } = usePlace(id);
   const [showInfoCheck, setShowInfoCheck] = useState(false);
+  const currentUserId = useAuthStore((s) => s.user?.id);
 
   if (isLoading) {
     return (
@@ -75,7 +77,7 @@ export function RestaurantView({ id }: { id: string }) {
 
           <TopDishes placeId={place.id} />
 
-          <GallerySection placeId={place.id} />
+          <GallerySection placeId={place.id} isOwner={place.claimedByUserId === currentUserId} />
 
           <TikTokSection place={place} />
 

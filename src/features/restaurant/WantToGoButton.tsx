@@ -22,15 +22,12 @@ export function WantToGoButton({ placeId }: { placeId: string }) {
       type="button"
       disabled={isPending}
       onClick={handleClick}
-      title={isAuthenticated ? "Quiero ir" : "Inicia sesión para marcar que quieres ir"}
       aria-label={isInterested ? "Quitar de \"quiero ir\"" : "Marcar \"quiero ir\""}
       aria-pressed={isInterested}
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-100 transition hover:bg-neutral-200 disabled:opacity-50 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+      className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md shadow-primary-500/40 transition hover:bg-primary-600 disabled:opacity-60"
     >
-      <Flag
-        size={18}
-        className={clsx(isInterested ? "fill-primary text-primary" : "text-neutral-500")}
-      />
+      <Flag size={17} className={clsx(isInterested && "fill-white")} />
+      {isInterested ? "¡Quiero ir!" : "Quiero ir"}
     </button>
   );
 }

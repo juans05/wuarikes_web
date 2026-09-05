@@ -9,3 +9,10 @@ export async function getPlacePhotos(placeId: string, page = 1, limit = 20) {
   );
   return data;
 }
+
+export async function uploadPlacePhoto(placeId: string, file: File) {
+  const formData = new FormData();
+  formData.append("photo", file);
+  const { data } = await apiClient.post<PlacePhoto>(`/places/${placeId}/photos`, formData);
+  return data;
+}
