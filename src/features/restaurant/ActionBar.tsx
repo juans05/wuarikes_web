@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, PenLine } from "lucide-react";
+import { PenLine } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthModalStore } from "@/stores/authModal.store";
 import { FavoriteButton } from "./FavoriteButton";
@@ -47,23 +47,13 @@ export function ActionBar({
           <PenLine size={17} />
           Escribir reseña
         </button>
+
+        <WantToGoButton placeId={placeId} />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => scrollTo("galeria")}
-          className="flex items-center gap-1.5 rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
-        >
-          <Camera size={15} />
-          Fotos y videos
-        </button>
-
-        <div className="ml-auto flex items-center gap-2">
-          <FavoriteButton placeId={placeId} />
-          <WantToGoButton placeId={placeId} />
-          <ShareButtons title={placeName} />
-        </div>
+      <div className="flex items-center gap-2">
+        <FavoriteButton placeId={placeId} />
+        <ShareButtons title={placeName} />
       </div>
     </div>
   );
