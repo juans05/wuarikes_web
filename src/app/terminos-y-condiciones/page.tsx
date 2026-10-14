@@ -18,8 +18,7 @@ export default function TerminosPage() {
             Términos y Condiciones
           </h1>
           <p className="text-sm text-neutral-500">
-            Aplican al uso de Wuarikes como usuario final (comensal). Última actualización:{" "}
-            {new Date().toLocaleDateString("es-PE", { year: "numeric", month: "long", day: "numeric" })}
+            Aplican al uso de Wuarikes como usuario final (comensal). Versión 2026-10-14 · Vigente desde el 14 de octubre de 2026
           </p>
         </header>
 

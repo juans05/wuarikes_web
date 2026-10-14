@@ -71,7 +71,7 @@ export default function LibroDeReclamacionesPage() {
             <p className="font-mono text-xl font-bold text-primary">{folio}</p>
           </div>
           <p className="text-xs text-neutral-500">
-            Conforme a la normativa vigente, tenemos hasta 30 días calendario para darte una respuesta.
+            Conforme al artículo 24.1 del Código de Protección y Defensa del Consumidor, te responderemos en un plazo máximo de 15 días hábiles improrrogables.
           </p>
           <Link href="/" className="mt-2 inline-block text-sm font-semibold text-primary hover:underline">
             Volver al inicio
