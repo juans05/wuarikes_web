@@ -78,16 +78,15 @@ export function RestaurantesView({
         />
 
         <main className="min-w-0 flex-1">
-          <div className="mb-4">
-            <VerticalChips
-              value={vertical}
-              onChange={(next) => {
-                setVertical(next);
-                // Las categorías son de cada rubro: la elegida ya no aplica.
-                setCategory(null);
-              }}
-            />
-          </div>
+          <VerticalChips
+            value={vertical}
+            className="mb-4"
+            onChange={(next) => {
+              setVertical(next);
+              // Las categorías son de cada rubro: la elegida ya no aplica.
+              setCategory(null);
+            }}
+          />
 
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-sm text-neutral-500">

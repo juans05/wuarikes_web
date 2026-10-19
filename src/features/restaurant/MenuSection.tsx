@@ -127,7 +127,9 @@ function DishItem({ dish }: { dish: Dish }) {
         <div className="flex items-start justify-between gap-2">
           <span className="text-sm leading-tight font-medium">{dish.name}</span>
         </div>
-        <span className="text-sm font-semibold text-primary">S/ {dish.price.toFixed(0)}</span>
+        <span className="text-sm font-semibold text-primary">
+          {dish.price != null ? `S/ ${dish.price.toFixed(0)}` : "Consultar"}
+        </span>
         {dish.kind === "servicio" && dish.durationMin != null && dish.durationMin > 0 && (
           <span className="flex items-center gap-1 text-xs text-neutral-500">
             <Clock size={12} />

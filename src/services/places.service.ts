@@ -81,7 +81,8 @@ export async function getPlaceMenu(id: string) {
       ...category,
       dishes: category.dishes.map((dish) => ({
         ...dish,
-        price: Number(dish.price),
+        // Number(null) daría 0 y se mostraría "S/ 0": el precio ausente se conserva como null.
+        price: dish.price != null ? Number(dish.price) : null,
       })),
     })),
   };

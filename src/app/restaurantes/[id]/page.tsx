@@ -7,7 +7,7 @@ import {
   getPlace,
   verticalOfType,
 } from "@/services/places.service";
-import type { Place } from "@/types/place";
+import type { BusinessTypesResponse, Place } from "@/types/place";
 
 async function fetchPlace(id: string) {
   try {
@@ -28,8 +28,8 @@ const fetchBusinessTypes = cache(async () => {
 
 // Rubro del local si NO es gastronomía; null = se trata como restaurante (también si el
 // backend aún no expone los rubros), así la ficha de un restaurante queda igual que siempre.
-async function fetchNonFoodVertical(place: Place) {
-  const vertical = verticalOfType(await fetchBusinessTypes(), place.businessType);
+function nonFoodVertical(place: Place, types: BusinessTypesResponse | null) {
+  const vertical = verticalOfType(types, place.businessType);
   return vertical && vertical.key !== DEFAULT_VERTICAL ? vertical : null;
 }
 
@@ -43,14 +43,14 @@ export async function generateMetadata({
   params,
 }: PageProps<"/restaurantes/[id]">): Promise<Metadata> {
   const { id } = await params;
-  const place = await fetchPlace(id);
+  const [place, types] = await Promise.all([fetchPlace(id), fetchBusinessTypes()]);
 
   if (!place) {
     return { title: "Restaurante no encontrado" };
   }
 
   const title = `${place.name}${place.district?.name ? ` — ${place.district.name}` : ""}`;
-  const vertical = await fetchNonFoodVertical(place);
+  const vertical = nonFoodVertical(place, types);
   const description =
     place.description ??
     `${place.name}: reseñas, ${vertical ? vertical.catalogLabel.toLowerCase() : "carta digital"}, horario y ubicación en Wuarikes.`;
@@ -77,8 +77,8 @@ export default async function RestaurantPage({
   params,
 }: PageProps<"/restaurantes/[id]">) {
   const { id } = await params;
-  const place = await fetchPlace(id);
-  const vertical = place ? await fetchNonFoodVertical(place) : null;
+  const [place, types] = await Promise.all([fetchPlace(id), fetchBusinessTypes()]);
+  const vertical = place ? nonFoodVertical(place, types) : null;
 
   return (
     <>

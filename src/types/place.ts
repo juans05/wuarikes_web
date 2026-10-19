@@ -86,7 +86,8 @@ export interface Dish {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  // Un servicio puede no tener precio fijo.
+  price: number | null;
   imageUrl: string | null;
   displayOrder: number;
   allergens: string[] | null;

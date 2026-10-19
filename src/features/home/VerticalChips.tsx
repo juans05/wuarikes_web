@@ -30,12 +30,16 @@ const ICONS_BY_VERTICAL: Record<string, LucideIcon> = {
 };
 
 // value: undefined = gastronomía (por defecto), 'all' = todos, o la clave de un rubro.
+// className va en el contenedor de los chips: así el espaciado del llamador (márgenes, ancho)
+// desaparece junto con ellos cuando no hay rubros que mostrar.
 export function VerticalChips({
   value,
   onChange,
+  className = "",
 }: {
   value: string | undefined;
   onChange: (value: string | undefined) => void;
+  className?: string;
 }) {
   const { data } = useBusinessTypes();
   // Sin lista (cargando, o backend anterior al multirrubro) no hay nada que filtrar.
@@ -55,7 +59,7 @@ export function VerticalChips({
     <div
       role="group"
       aria-label="Rubro"
-      className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]"
+      className={`flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] ${className}`}
     >
       {chips.map(({ key, label, Icon }) => {
         const active = current === key;

@@ -41,9 +41,11 @@ export function HomeView({ initialRubro }: { initialRubro: string | null }) {
 
       <HeroSection vertical={vertical} />
 
-      <section className="mx-auto w-full max-w-[1600px] px-4">
-        <VerticalChips value={vertical} onChange={setVertical} />
-      </section>
+      <VerticalChips
+        value={vertical}
+        onChange={setVertical}
+        className="mx-auto w-full max-w-[1600px] px-4"
+      />
 
       {isFood && (
         <section className="mx-auto w-full max-w-[1600px] px-4">
