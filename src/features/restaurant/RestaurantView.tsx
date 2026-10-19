@@ -73,7 +73,7 @@ export function RestaurantView({ id }: { id: string }) {
 
           <PromotionsSection place={place} />
 
-          <MenuSection placeId={place.id} />
+          <MenuSection placeId={place.id} businessType={place.businessType} />
 
           <TopDishes placeId={place.id} />
 

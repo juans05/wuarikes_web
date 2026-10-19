@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useCategories } from "@/hooks/usePlaces";
 
-export function HeroSearchBar() {
+export function HeroSearchBar({ vertical }: { vertical?: string }) {
   const router = useRouter();
-  const { data: categories } = useCategories();
+  const { data: categories } = useCategories(vertical);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
 
@@ -16,6 +16,7 @@ export function HeroSearchBar() {
     const params = new URLSearchParams();
     if (search.trim()) params.set("search", search.trim());
     if (category) params.set("categoria", category);
+    if (vertical) params.set("rubro", vertical);
     const query = params.toString();
     router.push(query ? `/restaurantes?${query}` : "/restaurantes");
   }

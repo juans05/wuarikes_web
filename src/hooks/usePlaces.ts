@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   claimPlace,
   getAmenities,
+  getBusinessTypes,
   getCategories,
   getFriendsVisited,
   getMostFavorited,
@@ -19,17 +20,17 @@ import {
 import { useAuthStore } from "@/stores/auth.store";
 import type { PlacesQuery } from "@/types/place";
 
-export function useTrending(district?: string, category?: string) {
+export function useTrending(district?: string, category?: string, vertical?: string) {
   return useQuery({
-    queryKey: ["places", "trending", district, category],
-    queryFn: () => getTrending(district, category),
+    queryKey: ["places", "trending", district, category, vertical],
+    queryFn: () => getTrending(district, category, undefined, vertical),
   });
 }
 
-export function useMostFavorited() {
+export function useMostFavorited(vertical?: string) {
   return useQuery({
-    queryKey: ["places", "most-favorited"],
-    queryFn: () => getMostFavorited(),
+    queryKey: ["places", "most-favorited", vertical],
+    queryFn: () => getMostFavorited(undefined, vertical),
   });
 }
 
@@ -110,8 +111,18 @@ export function useSearchTikTok(id: string, enabled: boolean) {
   });
 }
 
-export function useCategories() {
-  return useQuery({ queryKey: ["categories"], queryFn: getCategories });
+export function useCategories(vertical?: string) {
+  return useQuery({ queryKey: ["categories", vertical], queryFn: () => getCategories(vertical) });
+}
+
+// Configuración de rubros: vive solo en el backend y casi nunca cambia.
+export function useBusinessTypes() {
+  return useQuery({
+    queryKey: ["business-types"],
+    queryFn: getBusinessTypes,
+    staleTime: 60 * 60 * 1000,
+    retry: false,
+  });
 }
 
 export function useAmenities() {

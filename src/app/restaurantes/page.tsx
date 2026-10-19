@@ -9,14 +9,15 @@ export const metadata: Metadata = {
 export default async function RestaurantesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; categoria?: string }>;
+  searchParams: Promise<{ search?: string; categoria?: string; rubro?: string | string[] }>;
 }) {
-  const { search, categoria } = await searchParams;
+  const { search, categoria, rubro } = await searchParams;
 
   return (
     <RestaurantesView
       initialSearch={search ?? ""}
       initialCategory={categoria ?? null}
+      initialRubro={typeof rubro === "string" ? rubro : null}
     />
   );
 }

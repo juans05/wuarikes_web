@@ -1,6 +1,8 @@
 import { apiClient } from "@/api/client";
 import type {
   Amenity,
+  BusinessTypesResponse,
+  BusinessTypeVertical,
   Category,
   MenuCategory,
   PaginatedResponse,
@@ -133,9 +135,28 @@ export async function getPromotions(id: string) {
   return data;
 }
 
-export async function getCategories() {
-  const { data } = await apiClient.get<Category[]>("/places/categories");
+export async function getCategories(vertical?: string) {
+  const { data } = await apiClient.get<Category[]>("/places/categories", {
+    params: { vertical },
+  });
   return data;
+}
+
+// Rubro que el backend asume cuando no se pide ninguno (y el de todo local sin businessType).
+export const DEFAULT_VERTICAL = "gastronomia";
+
+export async function getBusinessTypes() {
+  const { data } = await apiClient.get<BusinessTypesResponse>("/places/business-types");
+  return data;
+}
+
+// Rubro al que pertenece un tipo de negocio; null si aún no se conoce (sin datos o sin tipo).
+export function verticalOfType(
+  data: BusinessTypesResponse | null | undefined,
+  businessType: string | undefined,
+): BusinessTypeVertical | null {
+  if (!data || !businessType) return null;
+  return data.verticals.find((v) => v.types.some((t) => t.key === businessType)) ?? null;
 }
 
 export async function getAmenities() {
@@ -177,16 +198,21 @@ export async function claimPlace(placeId: string, input: ClaimPlaceInput) {
   return data;
 }
 
-export async function getTrending(district?: string, category?: string, limit = 10) {
+export async function getTrending(
+  district?: string,
+  category?: string,
+  limit = 10,
+  vertical?: string,
+) {
   const { data } = await apiClient.get<Place[]>("/places/discovery/different", {
-    params: { district, category, limit },
+    params: { district, category, limit, vertical },
   });
   return data.map(normalizePlace);
 }
 
-export async function getMostFavorited(limit = 10) {
+export async function getMostFavorited(limit = 10, vertical?: string) {
   const { data } = await apiClient.get<Place[]>("/places/discovery/most-favorited", {
-    params: { limit },
+    params: { limit, vertical },
   });
   return data.map(normalizePlace);
 }
