@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { OpenNowBadge } from "@/components/common/OpenNowBadge";
 import { RatingStars } from "@/components/common/RatingStars";
+import { useBusinessTypes } from "@/hooks/usePlaces";
+import { DEFAULT_VERTICAL, verticalOfType } from "@/services/places.service";
 import type { Place } from "@/types/place";
 
 const markerIcon = L.icon({
@@ -39,6 +41,14 @@ export function MapView({
   places: Place[];
   onSelect?: (place: Place) => void;
 }) {
+  const { data: businessTypes } = useBusinessTypes();
+  // Etiqueta del tipo de negocio ("Barbería") solo fuera de gastronomía: ahí la categoría ya lo dice.
+  function typeLabel(place: Place) {
+    const vertical = verticalOfType(businessTypes, place.businessType);
+    if (!vertical || vertical.key === DEFAULT_VERTICAL) return null;
+    return vertical.types.find((t) => t.key === place.businessType)?.label ?? null;
+  }
+
   return (
     <MapContainer
       center={LIMA_CENTER}
@@ -85,8 +95,13 @@ export function MapView({
                 )}
               </div>
 
-              {(place.category || place.tags.length > 0) && (
+              {(place.category || place.tags.length > 0 || typeLabel(place)) && (
                 <div className="mb-1.5 flex flex-wrap gap-1">
+                  {typeLabel(place) && (
+                    <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
+                      {typeLabel(place)}
+                    </span>
+                  )}
                   {place.category && (
                     <span className="rounded-full border border-primary/30 px-2 py-0.5 text-[10px] font-medium text-primary">
                       {place.category.name}

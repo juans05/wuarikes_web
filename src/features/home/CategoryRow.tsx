@@ -2,9 +2,18 @@
 
 import Link from "next/link";
 import { PlaceCard } from "@/components/ui/PlaceCard";
+import { rubroQuery } from "@/hooks/useVerticalFilter";
 import type { Category, Place } from "@/types/place";
 
-export function CategoryRow({ category, places }: { category: Category; places: Place[] }) {
+export function CategoryRow({
+  category,
+  places,
+  vertical,
+}: {
+  category: Category;
+  places: Place[];
+  vertical?: string;
+}) {
   if (places.length === 0) return null;
 
   return (
@@ -14,7 +23,7 @@ export function CategoryRow({ category, places }: { category: Category; places: 
           Wuarikes recomienda: {category.name}
         </h2>
         <Link
-          href={`/restaurantes?categoria=${encodeURIComponent(category.slug)}`}
+          href={`/restaurantes?categoria=${encodeURIComponent(category.slug)}${rubroQuery(vertical)}`}
           className="shrink-0 text-sm font-semibold text-primary hover:underline"
         >
           Ver todos →

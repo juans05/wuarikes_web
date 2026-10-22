@@ -3,19 +3,22 @@
 import { Logo } from "@/components/common/Logo";
 import { PlaceCardSkeleton } from "@/components/common/Skeleton";
 import { useCategories, useMostFavorited, usePlaces, useTrending } from "@/hooks/usePlaces";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import type { Place } from "@/types/place";
 import { CategoryRow } from "./CategoryRow";
 import { CategoryTiles } from "./CategoryTiles";
 import { HeroSection } from "./HeroSection";
 import { HostCTASection } from "./HostCTASection";
 import { PlaceRow } from "./PlaceRow";
+import { VerticalChips } from "./VerticalChips";
 import { WhereToEatWizard } from "./WhereToEatWizard";
 
-export function HomeView() {
-  const { data: categories } = useCategories();
-  const { data, isLoading, isError } = usePlaces({ limit: 100 });
-  const { data: trending } = useTrending();
-  const { data: mostFavorited } = useMostFavorited();
+export function HomeView({ initialRubro }: { initialRubro: string | null }) {
+  const { vertical, setVertical, isFood } = useVerticalFilter(initialRubro);
+  const { data: categories } = useCategories(vertical);
+  const { data, isLoading, isError } = usePlaces({ limit: 100, vertical });
+  const { data: trending } = useTrending(undefined, undefined, vertical);
+  const { data: mostFavorited } = useMostFavorited(vertical);
 
   const places = data?.data ?? [];
   const placesByCategory = new Map<string, Place[]>();
@@ -36,11 +39,19 @@ export function HomeView() {
         <Logo />
       </div>
 
-      <HeroSection />
+      <HeroSection vertical={vertical} />
 
-      <section className="mx-auto w-full max-w-[1600px] px-4">
-        <WhereToEatWizard />
-      </section>
+      <VerticalChips
+        value={vertical}
+        onChange={setVertical}
+        className="mx-auto w-full max-w-[1600px] px-4"
+      />
+
+      {isFood && (
+        <section className="mx-auto w-full max-w-[1600px] px-4">
+          <WhereToEatWizard />
+        </section>
+      )}
 
       <PlaceRow title="Tendencias esta semana" places={trending ?? []} />
       <PlaceRow title="Lo más guardado" places={mostFavorited ?? []} />
@@ -50,7 +61,7 @@ export function HomeView() {
           <h2 className="mb-4 font-heading text-xl font-bold text-neutral-900 dark:text-neutral-50">
             Explora por categoría
           </h2>
-          <CategoryTiles categories={categoriesWithPlaces} />
+          <CategoryTiles categories={categoriesWithPlaces} vertical={vertical} />
         </section>
       )}
 
@@ -78,6 +89,7 @@ export function HomeView() {
           <CategoryRow
             key={category.id}
             category={category}
+            vertical={vertical}
             places={(placesByCategory.get(category.slug) ?? []).slice(0, 8)}
           />
         ))}

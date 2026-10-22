@@ -1,17 +1,42 @@
 import Image from "next/image";
 import clsx from "clsx";
-import { UtensilsCrossed } from "lucide-react";
-import { usePlaceMenu } from "@/hooks/usePlaces";
+import { Clock, UtensilsCrossed } from "lucide-react";
+import { useBusinessTypes, usePlaceMenu } from "@/hooks/usePlaces";
+import { DEFAULT_VERTICAL, verticalOfType } from "@/services/places.service";
 import type { Dish } from "@/types/place";
 import { SuggestEditButton } from "./SuggestEditButton";
 
-export function MenuSection({ placeId }: { placeId: string }) {
+function formatDuration(min: number) {
+  const hours = Math.floor(min / 60);
+  const rest = min % 60;
+  if (hours === 0) return `${rest} min`;
+  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
+}
+
+export function MenuSection({
+  placeId,
+  businessType,
+}: {
+  placeId: string;
+  businessType?: string;
+}) {
   const { data, isLoading } = usePlaceMenu(placeId);
+  const { data: businessTypes } = useBusinessTypes();
   const categories = data?.categories ?? [];
   const menuImageUrls = data?.menuImageUrls ?? [];
 
+  // Gastronomía conserva "Carta"/"Carta digital"; el resto usa el nombre del catálogo de su rubro
+  // ("Servicios", "Productos"...). Sin datos del backend se comporta como hoy.
+  const vertical = verticalOfType(businessTypes, businessType);
+  const isFood = !vertical || vertical.key === DEFAULT_VERTICAL;
+  const catalog = vertical?.catalogLabel ?? "Carta";
+
   if (isLoading) {
-    return <p className="text-sm text-neutral-500">Cargando carta...</p>;
+    return (
+      <p className="text-sm text-neutral-500">
+        {isFood ? "Cargando carta..." : `Cargando ${catalog.toLowerCase()}...`}
+      </p>
+    );
   }
 
   if (categories.length === 0) {
@@ -19,7 +44,7 @@ export function MenuSection({ placeId }: { placeId: string }) {
       return (
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold">Carta</h2>
+            <h2 className="text-lg font-semibold">{isFood ? "Carta" : catalog}</h2>
             <SuggestEditButton placeId={placeId} field="menu" />
           </div>
           <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
@@ -38,9 +63,13 @@ export function MenuSection({ placeId }: { placeId: string }) {
 
     return (
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Carta digital</h2>
+        <h2 className="text-lg font-semibold">{isFood ? "Carta digital" : catalog}</h2>
         <div className="flex items-center justify-between gap-3 rounded-2xl bg-neutral-50 p-4 dark:bg-neutral-900">
-          <p className="text-sm text-neutral-400">Todavía no hay carta cargada.</p>
+          <p className="text-sm text-neutral-400">
+            {isFood
+              ? "Todavía no hay carta cargada."
+              : `Todavía no cargaron ${catalog.toLowerCase()}.`}
+          </p>
           <SuggestEditButton placeId={placeId} field="menu" />
         </div>
       </section>
@@ -50,7 +79,7 @@ export function MenuSection({ placeId }: { placeId: string }) {
   return (
     <section className="flex flex-col gap-6">
       <div className="flex items-center gap-2">
-        <h2 className="text-lg font-semibold">Carta digital</h2>
+        <h2 className="text-lg font-semibold">{isFood ? "Carta digital" : catalog}</h2>
         <SuggestEditButton placeId={placeId} field="menu" />
       </div>
       {categories.map((category) => (
@@ -98,7 +127,15 @@ function DishItem({ dish }: { dish: Dish }) {
         <div className="flex items-start justify-between gap-2">
           <span className="text-sm leading-tight font-medium">{dish.name}</span>
         </div>
-        <span className="text-sm font-semibold text-primary">S/ {dish.price.toFixed(0)}</span>
+        <span className="text-sm font-semibold text-primary">
+          {dish.price != null ? `S/ ${dish.price.toFixed(0)}` : "Consultar"}
+        </span>
+        {dish.kind === "servicio" && dish.durationMin != null && dish.durationMin > 0 && (
+          <span className="flex items-center gap-1 text-xs text-neutral-500">
+            <Clock size={12} />
+            {formatDuration(dish.durationMin)}
+          </span>
+        )}
         {dish.description && (
           <p className="line-clamp-2 text-xs text-neutral-500">{dish.description}</p>
         )}

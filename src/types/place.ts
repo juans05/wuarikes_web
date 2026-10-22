@@ -16,6 +16,8 @@ export interface Place {
   id: string;
   name: string;
   slug: string;
+  // Opcional: un backend anterior al multirrubro no lo envía (= restaurante).
+  businessType?: string;
   description: string | null;
   category: Category | null;
   district: { id: string; name: string } | null;
@@ -56,6 +58,8 @@ export interface GoogleReview {
 }
 
 export interface PlacesQuery {
+  // Rubro o 'all'. Sin valor el backend devuelve solo gastronomía.
+  vertical?: string;
   category?: string;
   district?: string;
   search?: string;
@@ -82,12 +86,27 @@ export interface Dish {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  // Un servicio puede no tener precio fijo.
+  price: number | null;
   imageUrl: string | null;
   displayOrder: number;
   allergens: string[] | null;
   ingredients: string[] | null;
   isAvailable: boolean;
+  // Opcionales: un backend anterior al multirrubro no los envía.
+  kind?: "producto" | "servicio";
+  durationMin?: number | null;
+}
+
+export interface BusinessTypeVertical {
+  key: string;
+  label: string;
+  catalogLabel: string;
+  types: { key: string; label: string }[];
+}
+
+export interface BusinessTypesResponse {
+  verticals: BusinessTypeVertical[];
 }
 
 export interface MenuCategory {

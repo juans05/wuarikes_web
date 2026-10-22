@@ -49,17 +49,19 @@ function CollapsibleSection({
 
 export function FiltersSidebar({
   category,
+  vertical,
   onCategoryChange,
   filters,
   onFiltersChange,
 }: {
   category: string | null;
+  vertical?: string;
   onCategoryChange: (category: string | null) => void;
   filters: AdvancedFilters;
   onFiltersChange: (filters: AdvancedFilters) => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { data: categories } = useCategories();
+  const { data: categories } = useCategories(vertical);
   const { data: amenities } = useAmenities();
 
   useEffect(() => {

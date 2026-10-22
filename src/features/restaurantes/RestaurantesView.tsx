@@ -6,7 +6,9 @@ import { List, Map as MapIcon, Sparkles } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { PlaceCard } from "@/components/ui/PlaceCard";
 import { usePlaces } from "@/hooks/usePlaces";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { SearchBar } from "@/features/home/SearchBar";
+import { VerticalChips } from "@/features/home/VerticalChips";
 import { EMPTY_FILTERS, FiltersSidebar, type AdvancedFilters } from "./FiltersSidebar";
 import { WuarikesHereForm } from "./WuarikesHereForm";
 
@@ -20,10 +22,13 @@ const MapView = dynamic(() => import("@/features/home/MapView").then((m) => m.Ma
 export function RestaurantesView({
   initialSearch,
   initialCategory,
+  initialRubro,
 }: {
   initialSearch: string;
   initialCategory: string | null;
+  initialRubro: string | null;
 }) {
+  const { vertical, setVertical } = useVerticalFilter(initialRubro);
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [category, setCategory] = useState<string | null>(initialCategory);
@@ -36,6 +41,7 @@ export function RestaurantesView({
   }, [search]);
 
   const { data, isLoading, isError } = usePlaces({
+    vertical,
     search: debouncedSearch || undefined,
     category: category ?? undefined,
     amenities: filters.amenities.length > 0 ? filters.amenities : undefined,
@@ -65,12 +71,23 @@ export function RestaurantesView({
       <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col gap-6 p-4 lg:flex-row">
         <FiltersSidebar
           category={category}
+          vertical={vertical}
           onCategoryChange={setCategory}
           filters={filters}
           onFiltersChange={setFilters}
         />
 
         <main className="min-w-0 flex-1">
+          <VerticalChips
+            value={vertical}
+            className="mb-4"
+            onChange={(next) => {
+              setVertical(next);
+              // Las categorías son de cada rubro: la elegida ya no aplica.
+              setCategory(null);
+            }}
+          />
+
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-sm text-neutral-500">
               {!isLoading && !isError &&
