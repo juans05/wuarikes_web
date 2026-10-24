@@ -7,6 +7,7 @@ import {
   getFriendsVisited,
   getMostFavorited,
   getPlace,
+  getPlaceActions,
   getPlaceMenu,
   getPlaces,
   getPromotions,
@@ -137,5 +138,13 @@ export function useClaimPlace() {
   return useMutation({
     mutationFn: ({ placeId, input }: { placeId: string; input: Parameters<typeof claimPlace>[1] }) =>
       claimPlace(placeId, input),
+  });
+}
+
+export function usePlaceActions(id: string) {
+  return useQuery({
+    queryKey: ["place", id, "actions"],
+    queryFn: () => getPlaceActions(id),
+    enabled: Boolean(id),
   });
 }

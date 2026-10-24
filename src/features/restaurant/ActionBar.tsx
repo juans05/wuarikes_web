@@ -1,6 +1,7 @@
 "use client";
 
-import { PenLine } from "lucide-react";
+import { CalendarDays, MessageCircle, PenLine } from "lucide-react";
+import { usePlaceActions } from "@/hooks/usePlaces";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthModalStore } from "@/stores/authModal.store";
 import { FavoriteButton } from "./FavoriteButton";
@@ -23,9 +24,37 @@ export function ActionBar({
 }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const openAuthModal = useAuthModalStore((s) => s.open);
+  const { data: actions } = usePlaceActions(placeId);
+  const orderText = encodeURIComponent(`Hola, quiero hacer un pedido en ${placeName} (vi su ficha en Wuarikes).`);
 
   return (
     <div className="flex flex-col gap-3">
+      {(actions?.bookingUrl || actions?.orderWhatsapp) && (
+        <div className="flex flex-col gap-2">
+          {actions.bookingUrl && (
+            <a
+              href={actions.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-700 px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-primary-800"
+            >
+              <CalendarDays size={18} />
+              Reservar cita
+            </a>
+          )}
+          {actions.orderWhatsapp && (
+            <a
+              href={`https://wa.me/${actions.orderWhatsapp}?text=${orderText}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0E7A3E] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-[#0B6533]"
+            >
+              <MessageCircle size={18} />
+              Pedir por WhatsApp
+            </a>
+          )}
+        </div>
+      )}
       <div className="flex flex-col gap-2">
         {isAuthenticated ? (
           <QuickCheckin placeId={placeId} onCheckedIn={onCheckedIn} />
