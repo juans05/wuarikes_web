@@ -24,7 +24,9 @@ export function ActionBar({
 }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const openAuthModal = useAuthModalStore((s) => s.open);
-  const { data: actions } = usePlaceActions(placeId);
+  const { data } = usePlaceActions(placeId);
+  // Defensa extra: solo enlaces http(s) aunque el backend arme la URL.
+  const actions = data && { ...data, bookingUrl: /^https?:\/\//i.test(data.bookingUrl ?? "") ? data.bookingUrl : null };
   const orderText = encodeURIComponent(`Hola, quiero hacer un pedido en ${placeName} (vi su ficha en Wuarikes).`);
 
   return (
