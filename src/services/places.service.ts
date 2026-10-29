@@ -254,3 +254,14 @@ export async function submitWuarikesHere(input: SubmitWuarikesHereInput) {
   const { data } = await apiClient.post<{ message: string }>("/places/wuarikes-here", input);
   return data;
 }
+
+/** Reservar cita (link de la agenda del local) y pedir por WhatsApp (el bot toma recojo/delivery); null si no aplica. */
+export interface PlaceActions {
+  bookingUrl: string | null;
+  orderWhatsapp: string | null;
+}
+
+export async function getPlaceActions(id: string) {
+  const { data } = await apiClient.get<PlaceActions>(`/public/places/${id}/actions`);
+  return data;
+}
