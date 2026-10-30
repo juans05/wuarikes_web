@@ -49,6 +49,7 @@ export function RestaurantesView({
     priceMax: filters.priceMax,
     minRating: filters.minRating,
     openNow: filters.openNow || undefined,
+    hasLoyalty: filters.hasLoyalty || undefined,
     limit: 30,
   });
 

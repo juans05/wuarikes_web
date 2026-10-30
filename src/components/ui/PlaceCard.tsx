@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { RatingStars } from "@/components/common/RatingStars";
 import { OpenNowBadge } from "@/components/common/OpenNowBadge";
+import { BenefitBadge } from "@/components/common/BenefitBadge";
 import { FavoriteButton } from "@/features/restaurant/FavoriteButton";
 import type { Place } from "@/types/place";
 
@@ -68,6 +69,7 @@ export function PlaceCard({
             {place.category?.name}
             {place.district?.name ? ` · ${place.district.name}` : ""}
           </p>
+          <BenefitBadge hasActiveBenefit={place.hasActiveBenefit} />
           <OpenNowBadge openHoursText={place.openHoursText} openingHours={place.openingHours} />
         </div>
 

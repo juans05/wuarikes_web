@@ -101,6 +101,7 @@ export function MenuSection({
 function DishItem({ dish }: { dish: Dish }) {
   const ingredients = dish.ingredients ?? [];
   const allergens = dish.allergens ?? [];
+  const photos = dish.images?.length ? dish.images : dish.imageUrl ? [dish.imageUrl] : [];
 
   return (
     <div
@@ -110,12 +111,23 @@ function DishItem({ dish }: { dish: Dish }) {
       )}
     >
       <div className="relative aspect-4/3 w-full shrink-0 bg-neutral-100 dark:bg-neutral-800">
-        {dish.imageUrl ? (
-          <Image src={dish.imageUrl} alt={dish.name} fill sizes="176px" className="object-cover" />
+        {photos.length > 0 ? (
+          <div className="flex h-full w-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]">
+            {photos.map((src, i) => (
+              <div key={src + i} className="relative h-full w-full shrink-0 snap-center">
+                <Image src={src} alt={`${dish.name} ${i + 1}`} fill sizes="176px" className="object-cover" />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="flex h-full w-full items-center justify-center text-neutral-300 dark:text-neutral-700">
             <UtensilsCrossed size={28} />
           </div>
+        )}
+        {photos.length > 1 && (
+          <span className="absolute right-2 bottom-2 rounded-full bg-neutral-900/70 px-2 py-0.5 text-[10px] font-medium text-white">
+            {photos.length} fotos
+          </span>
         )}
         {!dish.isAvailable && (
           <span className="absolute top-2 left-2 rounded-full bg-neutral-900/80 px-2 py-0.5 text-[10px] font-medium text-white">

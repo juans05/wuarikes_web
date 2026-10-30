@@ -1,33 +1,22 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { Pencil, Play } from "lucide-react";
 import { useCheckinsFeed } from "@/hooks/useCheckins";
-import { usePlaceVideos, useUploadPlaceVideo } from "@/hooks/usePlaceVideos";
-import { usePlacePhotos, useUploadPlacePhoto } from "@/hooks/usePlacePhotos";
-import { getErrorMessage } from "@/utils/getErrorMessage";
+import { usePlaceVideos } from "@/hooks/usePlaceVideos";
+import { usePlacePhotos } from "@/hooks/usePlacePhotos";
+import { UploadMediaModal } from "./UploadMediaModal";
 
 type Tab = "photos" | "videos";
 
 export function GallerySection({ placeId, isOwner }: { placeId: string; isOwner: boolean }) {
   const [tab, setTab] = useState<Tab>("photos");
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const { data: checkins } = useCheckinsFeed({ placeId, size: 50, hasPhotos: true });
   const { data: videos } = usePlaceVideos(placeId);
   const { data: placePhotos } = usePlacePhotos(placeId);
-  const uploadPhoto = useUploadPlacePhoto(placeId);
-  const uploadVideo = useUploadPlaceVideo(placeId);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  function handleFileChange(file: File | null) {
-    if (!file) return;
-    if (file.type.startsWith("video/")) {
-      uploadVideo.mutate(file);
-    } else {
-      uploadPhoto.mutate(file);
-    }
-  }
 
   const photos = useMemo(() => {
     // Las del registro del local van primero — son curadas, no dependen de que
@@ -41,35 +30,20 @@ export function GallerySection({ placeId, isOwner }: { placeId: string; isOwner:
 
   const videoList = videos?.data ?? [];
 
-  const isUploading = uploadPhoto.isPending || uploadVideo.isPending;
-
   return (
     <section id="galeria" className="scroll-mt-4 flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-semibold">Fotos y videos</h2>
         {isOwner && (
-          <>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp,video/mp4,video/quicktime"
-              className="hidden"
-              onChange={(e) => {
-                handleFileChange(e.target.files?.[0] ?? null);
-                e.target.value = "";
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              aria-label="Subir foto o video"
-              title="Subir foto o video"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-600 transition hover:bg-neutral-200 disabled:opacity-50 dark:bg-neutral-800 dark:text-neutral-300"
-            >
-              <Pencil size={13} />
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={() => setShowUploadModal(true)}
+            aria-label="Subir foto o video"
+            title="Subir foto o video"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-600 transition hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300"
+          >
+            <Pencil size={13} />
+          </button>
         )}
         <div role="tablist" aria-label="Galería" className="ml-auto flex gap-1 rounded-full bg-neutral-100 p-1 text-xs dark:bg-neutral-800">
           <TabButton id="photos" active={tab === "photos"} onClick={() => setTab("photos")}>
@@ -81,10 +55,8 @@ export function GallerySection({ placeId, isOwner }: { placeId: string; isOwner:
         </div>
       </div>
 
-      {(uploadPhoto.isError || uploadVideo.isError) && (
-        <p className="text-xs text-red-500">
-          {getErrorMessage(uploadPhoto.error || uploadVideo.error, "No se pudo subir el archivo. Intenta de nuevo.")}
-        </p>
+      {showUploadModal && (
+        <UploadMediaModal placeId={placeId} onClose={() => setShowUploadModal(false)} />
       )}
 
       {tab === "photos" && (

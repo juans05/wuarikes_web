@@ -10,11 +10,13 @@ export interface AdvancedFilters {
   priceMax?: number;
   minRating?: number;
   openNow: boolean;
+  hasLoyalty: boolean;
 }
 
 export const EMPTY_FILTERS: AdvancedFilters = {
   amenities: [],
   openNow: false,
+  hasLoyalty: false,
 };
 
 const RATING_TIERS = [3, 3.5, 4, 4.5];
@@ -89,6 +91,7 @@ export function FiltersSidebar({
     category !== null ||
     filters.amenities.length > 0 ||
     filters.openNow ||
+    filters.hasLoyalty ||
     filters.minRating != null ||
     filters.priceMin != null ||
     filters.priceMax != null;
@@ -196,6 +199,15 @@ export function FiltersSidebar({
           type="checkbox"
           checked={filters.openNow}
           onChange={(e) => onFiltersChange({ ...filters, openNow: e.target.checked })}
+        />
+      </section>
+
+      <section className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
+        <span className="text-sm font-medium">Con fidelización 🎁</span>
+        <input
+          type="checkbox"
+          checked={filters.hasLoyalty}
+          onChange={(e) => onFiltersChange({ ...filters, hasLoyalty: e.target.checked })}
         />
       </section>
 

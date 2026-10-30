@@ -6,8 +6,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "daily", priority: 1 },
+    { url: `${SITE_URL}/restaurantes`, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/login`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/registro`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/terminos-y-condiciones`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${SITE_URL}/libro-de-reclamaciones`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
   try {

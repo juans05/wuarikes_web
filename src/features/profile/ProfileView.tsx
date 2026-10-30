@@ -8,6 +8,7 @@ import {
   Cake,
   CalendarDays,
   Camera,
+  Gift,
   Home,
   LogOut,
   MapPin,
@@ -210,6 +211,13 @@ function AuthenticatedProfile() {
             >
               Editar perfil
             </button>
+            <Link
+              href="/perfil/fidelizacion"
+              title="Mis fidelizaciones"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-900"
+            >
+              <Gift size={16} />
+            </Link>
             <Link
               href="/perfil/ajustes"
               title="Ajustes"

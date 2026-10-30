@@ -129,6 +129,15 @@ export interface Promotion {
   startsAt: string | null;
   endsAt: string | null;
   isActive: boolean;
+  discountType: "percentage" | "fixed_amount" | null;
+  discountValue: number | null;
+}
+
+export function formatDiscountLabel(promo: Promotion): string | null {
+  if (!promo.discountType || promo.discountValue == null) return null;
+  return promo.discountType === "percentage"
+    ? `${promo.discountValue}% OFF`
+    : `S/ ${promo.discountValue} OFF`;
 }
 
 export async function getPromotions(id: string) {

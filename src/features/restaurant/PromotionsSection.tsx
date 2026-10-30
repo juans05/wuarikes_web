@@ -2,6 +2,7 @@
 
 import { Tag } from "lucide-react";
 import { usePromotions } from "@/hooks/usePlaces";
+import { formatDiscountLabel } from "@/services/places.service";
 import type { Place } from "@/types/place";
 
 export function PromotionsSection({ place }: { place: Place }) {
@@ -19,7 +20,14 @@ export function PromotionsSection({ place }: { place: Place }) {
           >
             <Tag size={18} className="shrink-0 text-secondary" />
             <div className="flex-1">
-              <p className="text-sm font-medium">{promo.title}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium">{promo.title}</p>
+                {formatDiscountLabel(promo) && (
+                  <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-white">
+                    {formatDiscountLabel(promo)}
+                  </span>
+                )}
+              </div>
               {promo.description && (
                 <p className="text-xs text-neutral-500">{promo.description}</p>
               )}

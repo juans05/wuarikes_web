@@ -5,6 +5,7 @@ import Image from "next/image";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { BenefitBadge } from "@/components/common/BenefitBadge";
 import { OpenNowBadge } from "@/components/common/OpenNowBadge";
 import { RatingStars } from "@/components/common/RatingStars";
 import { useBusinessTypes } from "@/hooks/usePlaces";
@@ -19,6 +20,25 @@ const markerIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 });
+
+// Mismo pin base + una insignia superpuesta para no perder el "¿dónde tengo
+// beneficios?" a simple vista en el mapa (hay que abrir cada popup si no).
+const benefitMarkerIcon = L.divIcon({
+  className: "",
+  html: `
+    <div class="relative h-[41px] w-[25px]">
+      <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" class="h-[41px] w-[25px]" />
+      <span class="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] shadow">🎁</span>
+    </div>
+  `,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
+function getMarkerIcon(place: Place) {
+  return place.hasActiveBenefit ? benefitMarkerIcon : markerIcon;
+}
 
 const LIMA_CENTER: [number, number] = [-12.0464, -77.0428];
 
@@ -68,7 +88,7 @@ export function MapView({
         <Marker
           key={place.id}
           position={[place.latitude, place.longitude]}
-          icon={markerIcon}
+          icon={getMarkerIcon(place)}
           eventHandlers={{ click: () => onSelect?.(place) }}
         >
           <Popup minWidth={250} maxWidth={280}>
@@ -107,6 +127,7 @@ export function MapView({
                       {place.category.name}
                     </span>
                   )}
+                  <BenefitBadge hasActiveBenefit={place.hasActiveBenefit} />
                   {place.tags.slice(0, 2).map((tag) => (
                     <span
                       key={tag.id}

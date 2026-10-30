@@ -44,6 +44,8 @@ export interface Place {
   tags: { id: string; name: string }[];
   views: number;
   googleReviews: GoogleReview[];
+  hasActiveLoyaltyProgram?: boolean;
+  hasActiveBenefit?: boolean;
 }
 
 export interface GoogleReview {
@@ -71,6 +73,7 @@ export interface PlacesQuery {
   minRating?: number;
   amenities?: string[];
   openNow?: boolean;
+  hasLoyalty?: boolean;
   page?: number;
   limit?: number;
 }
@@ -89,6 +92,7 @@ export interface Dish {
   // Un servicio puede no tener precio fijo.
   price: number | null;
   imageUrl: string | null;
+  images?: string[] | null;
   displayOrder: number;
   allergens: string[] | null;
   ingredients: string[] | null;
