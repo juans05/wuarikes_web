@@ -88,7 +88,7 @@ export function UploadMediaModal({
             <>
               <ImagePlus size={28} className="text-neutral-400" />
               <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                Elegí una foto o video
+                Elige una foto o video
               </span>
             </>
           )}

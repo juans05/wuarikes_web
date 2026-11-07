@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { List, Map as MapIcon, Sparkles } from "lucide-react";
+import { List, MapPin, Map as MapIcon, Sparkles, X } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { PlaceCard } from "@/components/ui/PlaceCard";
 import { usePlaces } from "@/hooks/usePlaces";
@@ -23,16 +23,21 @@ export function RestaurantesView({
   initialSearch,
   initialCategory,
   initialRubro,
+  initialDistrict = null,
+  initialFilters = EMPTY_FILTERS,
 }: {
   initialSearch: string;
   initialCategory: string | null;
   initialRubro: string | null;
+  initialDistrict?: string | null;
+  initialFilters?: AdvancedFilters;
 }) {
   const { vertical, setVertical } = useVerticalFilter(initialRubro);
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [category, setCategory] = useState<string | null>(initialCategory);
-  const [filters, setFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
+  const [district, setDistrict] = useState<string | null>(initialDistrict);
+  const [filters, setFilters] = useState<AdvancedFilters>(initialFilters);
   const [view, setView] = useState<"list" | "map">("list");
 
   useEffect(() => {
@@ -44,6 +49,7 @@ export function RestaurantesView({
     vertical,
     search: debouncedSearch || undefined,
     category: category ?? undefined,
+    district: district ?? undefined,
     amenities: filters.amenities.length > 0 ? filters.amenities : undefined,
     priceMin: filters.priceMin,
     priceMax: filters.priceMax,
@@ -89,6 +95,16 @@ export function RestaurantesView({
             }}
           />
 
+          {district && (
+            <button
+              type="button"
+              onClick={() => setDistrict(null)}
+              className="mb-4 flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-100 dark:bg-neutral-800 dark:text-primary-300"
+            >
+              <MapPin size={14} /> {district} <X size={14} aria-label="Quitar distrito" />
+            </button>
+          )}
+
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-sm text-neutral-500">
               {!isLoading && !isError &&
@@ -132,10 +148,28 @@ export function RestaurantesView({
             </p>
           )}
           {!isLoading && !isError && places.length === 0 && (
-            <div className="flex flex-col items-center gap-4 py-8">
-              <p className="text-center text-sm text-neutral-500">
-                No encontramos restaurantes con esos filtros.
+            <div className="flex flex-col items-center gap-3 py-12 text-center">
+              <span className="text-5xl">🤷‍♂️</span>
+              <p className="font-heading text-lg font-bold text-neutral-900 dark:text-neutral-50">
+                Uy, nada por aquí con ese plan
               </p>
+              <p className="text-sm text-neutral-500">Prueba quitando algún filtro.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  // El texto buscado y el rubro también filtran: sin borrarlos seguía en 0.
+                  setSearch("");
+                  setDebouncedSearch("");
+                  setVertical(undefined);
+                  setCategory(null);
+                  setDistrict(null);
+                  setFilters(EMPTY_FILTERS);
+                  window.history.replaceState(null, "", window.location.pathname);
+                }}
+                className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-primary ring-1 ring-primary/40 transition hover:bg-primary-50 dark:bg-neutral-900"
+              >
+                Quitar todos los filtros
+              </button>
               <WuarikesHereForm />
             </div>
           )}

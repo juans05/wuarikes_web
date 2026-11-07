@@ -3,17 +3,22 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-import { Pencil, Play } from "lucide-react";
+import { Camera, Play } from "lucide-react";
 import { useCheckinsFeed } from "@/hooks/useCheckins";
 import { usePlaceVideos } from "@/hooks/usePlaceVideos";
 import { usePlacePhotos } from "@/hooks/usePlacePhotos";
 import { UploadMediaModal } from "./UploadMediaModal";
+import { ACTION_PILL } from "./SuggestEditButton";
+import { useAuthStore } from "@/stores/auth.store";
+import { useAuthModalStore } from "@/stores/authModal.store";
 
 type Tab = "photos" | "videos";
 
-export function GallerySection({ placeId, isOwner }: { placeId: string; isOwner: boolean }) {
+export function GallerySection({ placeId }: { placeId: string }) {
   const [tab, setTab] = useState<Tab>("photos");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const openAuthModal = useAuthModalStore((s) => s.open);
   const { data: checkins } = useCheckinsFeed({ placeId, size: 50, hasPhotos: true });
   const { data: videos } = usePlaceVideos(placeId);
   const { data: placePhotos } = usePlacePhotos(placeId);
@@ -34,17 +39,14 @@ export function GallerySection({ placeId, isOwner }: { placeId: string; isOwner:
     <section id="galeria" className="scroll-mt-4 flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-semibold">Fotos y videos</h2>
-        {isOwner && (
-          <button
-            type="button"
-            onClick={() => setShowUploadModal(true)}
-            aria-label="Subir foto o video"
-            title="Subir foto o video"
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-600 transition hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300"
-          >
-            <Pencil size={13} />
-          </button>
-        )}
+        {/* Cualquiera con sesión sube fotos y videos del local, sin reseña. */}
+        <button
+          type="button"
+          onClick={() => (isAuthenticated ? setShowUploadModal(true) : openAuthModal("login"))}
+          className={ACTION_PILL}
+        >
+          <Camera size={12} /> Subir
+        </button>
         <div role="tablist" aria-label="Galería" className="ml-auto flex gap-1 rounded-full bg-neutral-100 p-1 text-xs dark:bg-neutral-800">
           <TabButton id="photos" active={tab === "photos"} onClick={() => setTab("photos")}>
             Fotos ({photos.length})

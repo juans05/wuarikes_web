@@ -24,9 +24,14 @@ export function WantToGoButton({ placeId }: { placeId: string }) {
       onClick={handleClick}
       aria-label={isInterested ? "Quitar de \"quiero ir\"" : "Marcar \"quiero ir\""}
       aria-pressed={isInterested}
-      className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md shadow-primary-500/40 transition hover:bg-primary-600 disabled:opacity-60"
+      className={clsx(
+        "flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium ring-1 transition disabled:opacity-60",
+        isInterested
+          ? "bg-primary-50 text-primary-700 ring-primary/40 dark:bg-primary-900/30 dark:text-primary-200"
+          : "text-neutral-700 ring-neutral-200 hover:text-primary hover:ring-primary/60 dark:text-neutral-200 dark:ring-neutral-700",
+      )}
     >
-      <Flag size={17} className={clsx(isInterested && "fill-white")} />
+      <Flag size={15} className={clsx(isInterested && "fill-current")} />
       {isInterested ? "¡Quiero ir!" : "Quiero ir"}
     </button>
   );

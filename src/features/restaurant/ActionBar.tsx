@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, MessageCircle, PenLine } from "lucide-react";
+import { CalendarDays, MapPin, MessageCircle, PenLine } from "lucide-react";
 import { usePlaceActions } from "@/hooks/usePlaces";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthModalStore } from "@/stores/authModal.store";
@@ -38,7 +38,7 @@ export function ActionBar({
               href={actions.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-700 px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-primary-800"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-800"
             >
               <CalendarDays size={18} />
               Reservar cita
@@ -49,7 +49,7 @@ export function ActionBar({
               href={`https://wa.me/${actions.orderWhatsapp}?text=${orderText}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0E7A3E] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-[#0B6533]"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0E7A3E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0B6533]"
             >
               <MessageCircle size={18} />
               Pedir por WhatsApp
@@ -64,22 +64,24 @@ export function ActionBar({
           <button
             type="button"
             onClick={() => openAuthModal("login")}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md shadow-primary-500/40 transition hover:bg-primary-600"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-600"
           >
-            Inicia sesión para hacer check-in
+            <MapPin size={15} />
+            Inicia sesión y haz check-in
           </button>
         )}
 
-        <button
-          type="button"
-          onClick={() => scrollTo("resenas")}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md shadow-primary-500/40 transition hover:bg-primary-600"
-        >
-          <PenLine size={17} />
-          Escribir reseña
-        </button>
-
-        <WantToGoButton placeId={placeId} />
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => scrollTo("resenas")}
+            className="flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-neutral-700 ring-1 ring-neutral-200 transition hover:text-primary hover:ring-primary/60 dark:text-neutral-200 dark:ring-neutral-700"
+          >
+            <PenLine size={15} />
+            Escribir reseña
+          </button>
+          <WantToGoButton placeId={placeId} />
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Camera } from "lucide-react";
@@ -19,17 +20,21 @@ export function RestaurantHero({
   const communityPhotos = (data?.data ?? []).flatMap((c) =>
     [c.photoUrl, ...c.photos].filter((url): url is string => Boolean(url)),
   );
+  // Fotos importadas de Google Maps caducan (403): las que fallan salen de la portada.
+  const [broken, setBroken] = useState<Set<string>>(new Set());
   const photos = [place.coverImageUrl, ...communityPhotos]
-    .filter((url): url is string => Boolean(url))
+    .filter((url): url is string => Boolean(url) && !broken.has(url as string))
     .slice(0, 5);
 
   const totalPhotos = photos.length + Math.max(0, communityPhotos.length - photos.length + 1);
 
   return (
-    <div className="relative h-[300px] w-full overflow-hidden bg-neutral-900 sm:h-[420px] sm:rounded-b-[2rem] lg:h-[480px]">
+    <div className="relative h-[300px] w-full overflow-hidden bg-primary-50 dark:bg-neutral-900 sm:h-[420px] sm:rounded-b-[2rem] lg:h-[480px]">
       {photos.length === 0 ? (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary-800 via-primary-900 to-neutral-950">
-          <span className="font-heading text-3xl text-primary-100/40">{place.name}</span>
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-br from-primary-100 via-primary-50 to-secondary/30 dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900">
+          <div aria-hidden className="absolute -top-16 -right-10 h-64 w-64 rounded-full bg-secondary/30 blur-3xl" />
+          <div aria-hidden className="absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-primary-200/60 blur-3xl dark:bg-primary-900/30" />
+          <Image src="/logo-icon.jpg" alt="" width={96} height={96} className="relative h-20 w-20 rounded-3xl opacity-80 shadow-sm" />
         </div>
       ) : (
         <div className="flex h-full w-full">
@@ -45,6 +50,7 @@ export function RestaurantHero({
                 fill
                 priority={i === 0}
                 sizes="(max-width: 640px) 100vw, 800px"
+                onError={() => setBroken((prev) => new Set(prev).add(url))}
                 className="object-cover"
               />
             </div>

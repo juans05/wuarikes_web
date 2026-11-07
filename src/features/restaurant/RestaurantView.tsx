@@ -73,11 +73,18 @@ export function RestaurantView({ id }: { id: string }) {
 
           <PromotionsSection place={place} />
 
-          <MenuSection placeId={place.id} businessType={place.businessType} />
+          {/* La carta solo la publica el dueño: sin reclamar, no se muestra. */}
+          {place.claimedByUserId && (
+            <MenuSection
+              placeId={place.id}
+              businessType={place.businessType}
+              isOwner={place.claimedByUserId === currentUserId}
+            />
+          )}
 
           <TopDishes placeId={place.id} />
 
-          <GallerySection placeId={place.id} isOwner={place.claimedByUserId === currentUserId} />
+          <GallerySection placeId={place.id} />
 
           <TikTokSection place={place} />
 

@@ -1,72 +1,69 @@
 "use client";
 
-import { Logo } from "@/components/common/Logo";
+import Link from "next/link";
 import { PlaceCardSkeleton } from "@/components/common/Skeleton";
-import { useCategories, useMostFavorited, usePlaces, useTrending } from "@/hooks/usePlaces";
-import { useVerticalFilter } from "@/hooks/useVerticalFilter";
+import { useCategories, useMostFavorited, usePlaces } from "@/hooks/usePlaces";
+import { rubroQuery, useVerticalFilter } from "@/hooks/useVerticalFilter";
 import type { Place } from "@/types/place";
 import { CategoryRow } from "./CategoryRow";
-import { CategoryTiles } from "./CategoryTiles";
 import { HeroSection } from "./HeroSection";
 import { HostCTASection } from "./HostCTASection";
 import { PlaceRow } from "./PlaceRow";
 import { VerticalChips } from "./VerticalChips";
-import { WhereToEatWizard } from "./WhereToEatWizard";
+
+// Inicio corto a propósito: buscar, elegir rubro/categoría y ver pocas filas.
+const MAX_ROWS = 3;
 
 export function HomeView({ initialRubro }: { initialRubro: string | null }) {
-  const { vertical, setVertical, isFood } = useVerticalFilter(initialRubro);
+  const { vertical, setVertical } = useVerticalFilter(initialRubro);
   const { data: categories } = useCategories(vertical);
   const { data, isLoading, isError } = usePlaces({ limit: 100, vertical });
-  const { data: trending } = useTrending(undefined, undefined, vertical);
   const { data: mostFavorited } = useMostFavorited(vertical);
 
-  const places = data?.data ?? [];
+  const rubro = rubroQuery(vertical);
   const placesByCategory = new Map<string, Place[]>();
-  for (const place of places) {
-    if (!place.category) continue;
-    const list = placesByCategory.get(place.category.slug) ?? [];
-    list.push(place);
-    placesByCategory.set(place.category.slug, list);
+  for (const place of data?.data ?? []) {
+    const slug = place.category?.slug;
+    if (slug) placesByCategory.set(slug, [...(placesByCategory.get(slug) ?? []), place]);
   }
 
-  const categoriesWithPlaces = (categories ?? []).filter(
-    (category) => (placesByCategory.get(category.slug)?.length ?? 0) > 0,
-  );
+  const categoriesWithPlaces = (categories ?? []).filter((c) => placesByCategory.has(c.slug));
+  const topCategories = [...categoriesWithPlaces]
+    .sort((a, b) => placesByCategory.get(b.slug)!.length - placesByCategory.get(a.slug)!.length)
+    .slice(0, MAX_ROWS);
 
   return (
-    <div className="flex min-h-screen flex-col gap-14 pb-16 lg:pb-0">
-      <div className="flex items-center px-4 py-3 lg:hidden">
-        <Logo />
-      </div>
-
+    <div className="flex min-h-screen flex-col gap-14 pb-20 lg:pb-12">
       <HeroSection vertical={vertical} />
 
-      <VerticalChips
-        value={vertical}
-        onChange={setVertical}
-        className="mx-auto w-full max-w-[1600px] px-4"
+      <section className="mx-auto -mt-8 flex w-full max-w-[1400px] flex-col gap-3 px-4">
+        <VerticalChips value={vertical} onChange={setVertical} />
+        {categoriesWithPlaces.length > 0 && (
+          <nav
+            aria-label="Categorías"
+            className="flex gap-x-5 gap-y-2 overflow-x-auto pb-1 text-sm [scrollbar-width:none]"
+          >
+            {categoriesWithPlaces.map((c) => (
+              <Link
+                key={c.id}
+                href={`/restaurantes?categoria=${encodeURIComponent(c.slug)}${rubro}`}
+                className="shrink-0 py-1 text-neutral-500 transition hover:text-primary dark:text-neutral-400"
+              >
+                {c.name}
+              </Link>
+            ))}
+          </nav>
+        )}
+      </section>
+
+      <PlaceRow
+        title="Los más guardados"
+        subtitle="Favoritos de la comunidad Wuarikes"
+        places={mostFavorited ?? []}
       />
 
-      {isFood && (
-        <section className="mx-auto w-full max-w-[1600px] px-4">
-          <WhereToEatWizard />
-        </section>
-      )}
-
-      <PlaceRow title="Tendencias esta semana" places={trending ?? []} />
-      <PlaceRow title="Lo más guardado" places={mostFavorited ?? []} />
-
-      {categoriesWithPlaces.length > 0 && (
-        <section className="mx-auto w-full max-w-[1600px] px-4">
-          <h2 className="mb-4 font-heading text-xl font-bold text-neutral-900 dark:text-neutral-50">
-            Explora por categoría
-          </h2>
-          <CategoryTiles categories={categoriesWithPlaces} vertical={vertical} />
-        </section>
-      )}
-
       {isLoading && (
-        <section className="mx-auto w-full max-w-[1600px] px-4">
+        <section className="mx-auto w-full max-w-[1400px] px-4">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <PlaceCardSkeleton key={i} />
@@ -76,23 +73,21 @@ export function HomeView({ initialRubro }: { initialRubro: string | null }) {
       )}
 
       {isError && (
-        <section className="mx-auto w-full max-w-[1600px] px-4">
+        <section className="mx-auto w-full max-w-[1400px] px-4">
           <p className="py-8 text-center text-sm text-red-500">
             No se pudo conectar con el backend. Verifica que huarique_backend esté corriendo.
           </p>
         </section>
       )}
 
-      {!isLoading &&
-        !isError &&
-        categoriesWithPlaces.map((category) => (
-          <CategoryRow
-            key={category.id}
-            category={category}
-            vertical={vertical}
-            places={(placesByCategory.get(category.slug) ?? []).slice(0, 8)}
-          />
-        ))}
+      {topCategories.map((category) => (
+        <CategoryRow
+          key={category.id}
+          category={category}
+          vertical={vertical}
+          places={placesByCategory.get(category.slug)!.slice(0, 8)}
+        />
+      ))}
 
       <HostCTASection />
     </div>

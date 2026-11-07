@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Plus, Rss, User } from "lucide-react";
+import { Compass, Heart, Plus, Rss, User } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthModalStore } from "@/stores/authModal.store";
@@ -17,6 +17,14 @@ export function Navbar() {
       <Logo />
 
       <div className="flex items-center gap-5">
+        <Link
+          href="/restaurantes"
+          className="flex items-center gap-1.5 text-sm font-medium text-neutral-600 transition hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+        >
+          <Compass size={18} />
+          Explorar
+        </Link>
+
         <Link
           href="/feed"
           className="flex items-center gap-1.5 text-sm font-medium text-neutral-600 transition hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
@@ -38,7 +46,14 @@ export function Navbar() {
           className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
         >
           <Plus size={16} />
-          Agregar restaurante
+          Sugerir un lugar
+        </Link>
+
+        <Link
+          href="/negocios"
+          className="rounded-full px-3 py-1.5 text-sm font-semibold text-primary ring-1 ring-primary/40 transition hover:bg-primary-50 dark:hover:bg-neutral-800"
+        >
+          Para negocios
         </Link>
 
         {isAuthenticated ? (

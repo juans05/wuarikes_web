@@ -34,6 +34,13 @@ export function normalizePlace(raw: Place): Place {
     averagePrice: raw.averagePrice != null ? Number(raw.averagePrice) : null,
     priceMin: raw.priceMin != null ? Number(raw.priceMin) : null,
     priceMax: raw.priceMax != null ? Number(raw.priceMax) : null,
+    // El backend manda la entidad ubigeo ({ district: "Barranco", ... }), no { name }.
+    district: raw.district
+      ? {
+          id: raw.district.id,
+          name: raw.district.name ?? (raw.district as unknown as { district: string }).district,
+        }
+      : null,
     amenities: normalizeNamedList<Amenity>(raw.amenities, (name) => ({
       id: name,
       name,

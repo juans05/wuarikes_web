@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Heart, Home, Plus, Rss, User } from "lucide-react";
+import { Compass, Heart, Home, Plus, Rss, User } from "lucide-react";
 import clsx from "clsx";
 
 const ITEMS = [
   { href: "/", label: "Inicio", icon: Home },
+  { href: "/restaurantes", label: "Explorar", icon: Compass },
   { href: "/feed", label: "Actividad", icon: Rss },
   { href: "/favoritos", label: "Favoritos", icon: Heart },
   { href: "/perfil", label: "Perfil", icon: User },
@@ -20,7 +21,7 @@ export function BottomNav() {
     <>
       <Link
         href="/agregar-restaurante"
-        aria-label="Agregar restaurante"
+        aria-label="Sugerir un lugar"
         className="fixed right-4 bottom-20 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg lg:hidden"
       >
         <Plus size={24} />

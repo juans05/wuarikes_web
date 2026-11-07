@@ -1,6 +1,7 @@
 export const LEGAL_PROVIDER = {
   razonSocial: "Wuarikes SAC",
   ruc: "20616350227",
-  direccion: "Micaela Bastidas 231, Lima, Perú",
+  // Solo la ciudad: la dirección exacta no se publica.
+  ubicacion: "San Miguel, Lima, Perú",
   correo: "consulta@wuarikes.com",
 };

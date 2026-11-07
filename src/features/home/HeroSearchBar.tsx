@@ -3,19 +3,15 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
-import { useCategories } from "@/hooks/usePlaces";
 
 export function HeroSearchBar({ vertical }: { vertical?: string }) {
   const router = useRouter();
-  const { data: categories } = useCategories(vertical);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const params = new URLSearchParams();
     if (search.trim()) params.set("search", search.trim());
-    if (category) params.set("categoria", category);
     if (vertical) params.set("rubro", vertical);
     const query = params.toString();
     router.push(query ? `/restaurantes?${query}` : "/restaurantes");
@@ -24,40 +20,21 @@ export function HeroSearchBar({ vertical }: { vertical?: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 rounded-2xl bg-white p-3 shadow-xl ring-1 ring-black/5 sm:flex-row sm:items-center dark:bg-neutral-900 dark:ring-white/10"
+      role="search"
+      className="flex items-center gap-2 rounded-full bg-white p-1.5 pl-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10"
     >
-      <div className="relative flex-1">
-        <Search
-          size={18}
-          className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-neutral-400"
-        />
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Busca restaurantes, distritos, platos..."
-          aria-label="Buscar restaurantes por nombre, distrito o plato"
-          className="w-full rounded-xl border border-neutral-200 bg-transparent py-3 pr-4 pl-11 text-sm outline-none focus:border-primary dark:border-neutral-700"
-        />
-      </div>
-
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        aria-label="Categoría"
-        className="rounded-xl border border-neutral-200 bg-transparent px-4 py-3 text-sm outline-none focus:border-primary sm:w-48 dark:border-neutral-700"
-      >
-        <option value="">Todas las categorías</option>
-        {categories?.map((cat) => (
-          <option key={cat.id} value={cat.slug}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
-
+      <Search size={20} className="shrink-0 text-neutral-400" aria-hidden />
+      <input
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Barbería, cebiche, spa, Barranco…"
+        aria-label="Buscar negocios por nombre, rubro o distrito"
+        className="min-w-0 flex-1 bg-transparent py-3 text-base text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-neutral-50"
+      />
       <button
         type="submit"
-        className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-600"
+        className="shrink-0 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600 md:px-7"
       >
         Buscar
       </button>

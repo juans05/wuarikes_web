@@ -13,6 +13,10 @@ const FIELD_LABELS: Record<PlaceInfoField, string> = {
   amenities: "los servicios",
 };
 
+// Botón chico con texto para las secciones de la ficha (carta, fotos): visible sin gritar.
+export const ACTION_PILL =
+  "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-neutral-600 ring-1 ring-neutral-200 transition hover:text-primary hover:ring-primary/50 disabled:opacity-60 dark:text-neutral-300 dark:ring-neutral-700";
+
 /** Lapicito "sugerir o editar" — lleva a la pantalla completa de edición del local. */
 export function SuggestEditButton({ placeId, field }: { placeId: string; field: PlaceInfoField }) {
   return (

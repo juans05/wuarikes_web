@@ -1,13 +1,22 @@
 import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
+import { PANEL_LOGIN_URL } from "@/lib/business";
 
 const COLUMNS = [
   {
     title: "Explorar",
     links: [
       { href: "/", label: "Inicio" },
-      { href: "/restaurantes", label: "Restaurantes" },
+      { href: "/restaurantes", label: "Explorar negocios" },
       { href: "/favoritos", label: "Favoritos" },
+      { href: "/agregar-restaurante", label: "Sugerir un lugar" },
+    ],
+  },
+  {
+    title: "Negocios",
+    links: [
+      { href: "/negocios", label: "Wuarikes para negocios" },
+      { href: PANEL_LOGIN_URL, label: "Acceso al panel" },
     ],
   },
   {
@@ -39,12 +48,12 @@ const SOCIAL_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="mb-16 bg-neutral-900 px-6 py-10 text-neutral-300 lg:mb-0">
+    <footer className="mb-16 border-t border-neutral-200 bg-neutral-100 px-6 py-10 text-neutral-600 lg:mb-0 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-400">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-8 sm:flex-row sm:justify-between">
         <div>
-          <Logo light />
-          <p className="mt-2 max-w-xs text-sm text-neutral-400">
-            Descubre los mejores restaurantes, cafeterías y bares del Perú.
+          <Logo />
+          <p className="mt-2 max-w-xs text-sm text-neutral-500">
+            Descubre. Conecta. Disfruta. Los mejores negocios de tu barrio en un solo lugar.
           </p>
           <div className="mt-4 flex gap-3">
             {SOCIAL_LINKS.map(({ label, Icon }) => (
@@ -52,7 +61,7 @@ export function Footer() {
                 key={label}
                 href="#"
                 aria-label={label}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-800 text-neutral-300 transition hover:bg-neutral-700 hover:text-white"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-600 ring-1 ring-neutral-200 transition hover:bg-primary hover:text-white hover:ring-primary dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700"
               >
                 <Icon />
               </a>
@@ -63,11 +72,11 @@ export function Footer() {
         <div className="flex flex-wrap gap-10">
           {COLUMNS.map((column) => (
             <div key={column.title}>
-              <h3 className="mb-3 text-sm font-semibold text-white">{column.title}</h3>
+              <h3 className="mb-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100">{column.title}</h3>
               <ul className="flex flex-col gap-2 text-sm">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="transition hover:text-white">
+                    <Link href={link.href} className="transition hover:text-primary">
                       {link.label}
                     </Link>
                   </li>
@@ -78,7 +87,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 max-w-[1600px] border-t border-neutral-800 pt-6 text-xs text-neutral-500">
+      <div className="mx-auto mt-8 max-w-[1600px] border-t border-neutral-200 pt-6 text-xs text-neutral-500 dark:border-neutral-800">
         © {new Date().getFullYear()} Wuarikes. Hecho en Perú.
       </div>
     </footer>

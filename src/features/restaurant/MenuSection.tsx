@@ -1,10 +1,62 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-import { Clock, UtensilsCrossed } from "lucide-react";
+import { Check, Clock, Pencil, UtensilsCrossed } from "lucide-react";
 import { useBusinessTypes, usePlaceMenu } from "@/hooks/usePlaces";
 import { DEFAULT_VERTICAL, verticalOfType } from "@/services/places.service";
 import type { Dish } from "@/types/place";
-import { SuggestEditButton } from "./SuggestEditButton";
+import { useSubmitInfoSuggestion } from "@/hooks/useInfoCheck";
+import { PANEL_LOGIN_URL } from "@/lib/business";
+import { useAuthStore } from "@/stores/auth.store";
+import { useAuthModalStore } from "@/stores/authModal.store";
+import { ACTION_PILL } from "./SuggestEditButton";
+
+// Lo que de verdad se puede hacer con la carta: el dueño la edita en el panel; la comunidad
+// solo puede avisar que está desactualizada (el backend no acepta cartas de terceros).
+function MenuEditAction({
+  placeId,
+  isOwner,
+  empty = false,
+}: {
+  placeId: string;
+  isOwner: boolean;
+  empty?: boolean;
+}) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const openAuthModal = useAuthModalStore((s) => s.open);
+  const suggest = useSubmitInfoSuggestion();
+  const [sent, setSent] = useState(false);
+
+  if (isOwner) {
+    return (
+      <a href={PANEL_LOGIN_URL} className={ACTION_PILL}>
+        <Pencil size={12} /> Editar
+      </a>
+    );
+  }
+  if (sent) {
+    return (
+      <span className={`${ACTION_PILL} text-accent ring-accent/40`}>
+        <Check size={12} /> ¡Gracias por avisar!
+      </span>
+    );
+  }
+  return (
+    <button
+      type="button"
+      disabled={suggest.isPending}
+      onClick={() => {
+        if (!isAuthenticated) return openAuthModal("login");
+        suggest.mutate({ placeId, field: "menu" }, { onSuccess: () => setSent(true) });
+      }}
+      className={ACTION_PILL}
+    >
+      <Pencil size={12} /> {empty ? "Pedir carta" : "¿Desactualizada?"}
+    </button>
+  );
+}
 
 function formatDuration(min: number) {
   const hours = Math.floor(min / 60);
@@ -16,9 +68,11 @@ function formatDuration(min: number) {
 export function MenuSection({
   placeId,
   businessType,
+  isOwner = false,
 }: {
   placeId: string;
   businessType?: string;
+  isOwner?: boolean;
 }) {
   const { data, isLoading } = usePlaceMenu(placeId);
   const { data: businessTypes } = useBusinessTypes();
@@ -45,7 +99,7 @@ export function MenuSection({
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">{isFood ? "Carta" : catalog}</h2>
-            <SuggestEditButton placeId={placeId} field="menu" />
+            <MenuEditAction placeId={placeId} isOwner={isOwner} />
           </div>
           <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
             {menuImageUrls.map((url) => (
@@ -63,14 +117,16 @@ export function MenuSection({
 
     return (
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">{isFood ? "Carta digital" : catalog}</h2>
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-neutral-50 p-4 dark:bg-neutral-900">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold">{isFood ? "Carta digital" : catalog}</h2>
+          <MenuEditAction placeId={placeId} isOwner={isOwner} empty />
+        </div>
+        <div className="rounded-2xl bg-neutral-50 p-4 dark:bg-neutral-900">
           <p className="text-sm text-neutral-400">
             {isFood
               ? "Todavía no hay carta cargada."
               : `Todavía no cargaron ${catalog.toLowerCase()}.`}
           </p>
-          <SuggestEditButton placeId={placeId} field="menu" />
         </div>
       </section>
     );
@@ -80,7 +136,7 @@ export function MenuSection({
     <section className="flex flex-col gap-6">
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-semibold">{isFood ? "Carta digital" : catalog}</h2>
-        <SuggestEditButton placeId={placeId} field="menu" />
+        <MenuEditAction placeId={placeId} isOwner={isOwner} />
       </div>
       {categories.map((category) => (
         <div key={category.id} className="flex flex-col gap-3">

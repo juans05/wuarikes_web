@@ -23,11 +23,11 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Wuarikes — Descubre los mejores restaurantes del Perú",
+    default: "Wuarikes — Descubre. Conecta. Disfruta.",
     template: "%s | Wuarikes",
   },
   description:
-    "Descubre restaurantes, cafeterías y bares en Perú. Reseñas, mapas, menús digitales y promociones en un solo lugar.",
+    "Encuentra los mejores negocios cerca de ti en Perú: restaurantes, barberías, bodegas, spas y más. Reseñas, mapas, horarios y beneficios en un solo lugar.",
   openGraph: {
     type: "website",
     locale: "es_PE",

@@ -119,7 +119,7 @@ export function QuickCheckin({
         type="button"
         onClick={handleCheckin}
         disabled={busy}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md shadow-primary-500/40 transition hover:bg-primary-600 active:scale-[0.99] disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-600 active:scale-[0.99] disabled:opacity-60"
       >
         <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
           {!busy && (

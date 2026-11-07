@@ -93,7 +93,7 @@ export default function LibroDeReclamacionesPage() {
           </p>
         </header>
 
-        <ProviderCard label="Datos del proveedor" showCorreo={false} />
+        <ProviderCard label="Datos del proveedor" showCorreo={false} showUbicacion />
 
         <section className="space-y-3">
           <p className={labelClass}>¿Qué deseas registrar?</p>
